@@ -2,20 +2,25 @@ FROM tensorflow/tensorflow:latest
 RUN apt-get update && apt-get install --no-install-recommends --no-install-suggests -y curl
 RUN apt-get install ffmpeg libsm6 libxext6 jq wget -y
 
-# install geckodriver and firefox
+ENV GECKODRIVER_VER v0.29.1
+ENV FIREFOX_VER 87.0
 
-RUN GECKODRIVER_VERSION=`curl https://github.com/mozilla/geckodriver/releases/latest | grep -Po 'v[0-9]+.[0-9]+.[0-9]+'` && \
-    wget https://github.com/mozilla/geckodriver/releases/download/$GECKODRIVER_VERSION/geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz && \
-    tar -zxf geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz -C /usr/local/bin && \
-    chmod +x /usr/local/bin/geckodriver && \
-    rm geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz
-
-RUN FIREFOX_SETUP=firefox-setup.tar.bz2 && \
-    apt-get purge firefox && \
-    wget -O $FIREFOX_SETUP "https://download.mozilla.org/?product=firefox-latest&os=linux64" && \
-    tar xjf $FIREFOX_SETUP -C /opt/ && \
-    ln -s /opt/firefox/firefox /usr/bin/firefox && \
-    rm $FIREFOX_SETUP
+# Add latest FireFox
+RUN set -x \
+   && apt install -y \
+       libx11-xcb1 \
+       libdbus-glib-1-2 \
+   && curl -sSLO https://download-installer.cdn.mozilla.net/pub/firefox/releases/${FIREFOX_VER}/linux-x86_64/en-US/firefox-${FIREFOX_VER}.tar.bz2 \
+   && tar -jxf firefox-* \
+   && mv firefox /opt/ \
+   && chmod 755 /opt/firefox \
+   && chmod 755 /opt/firefox/firefox
+  
+# Add geckodriver
+RUN set -x \
+   && curl -sSLO https://github.com/mozilla/geckodriver/releases/download/${GECKODRIVER_VER}/geckodriver-${GECKODRIVER_VER}-linux64.tar.gz \
+   && tar zxf geckodriver-*.tar.gz \
+   && mv geckodriver /usr/bin/
 
 COPY requirements.txt .
 RUN pip3 install --upgrade pip

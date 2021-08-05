@@ -18,7 +18,7 @@ sudo docker build --tag tbgen:v1 .
 ```
 4. Run Docker container with built image:
 ```
-docker run -it --rm -v .:/tf/notebooks -p 8888:8888 tbgen:v1 jupyter notebook --allow-root
+sudo docker run -it --rm -v ~/repo/TIES_DataGeneration:/tf/repo tbgen:v1 /bin/bash
 ```
 5. Follow the instructions and open the URL in your host web browser: http://127.0.0.1:8888/?token=...
 6. Start generate table data:
