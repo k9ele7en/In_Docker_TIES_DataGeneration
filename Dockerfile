@@ -5,23 +5,6 @@ RUN apt-get install ffmpeg libsm6 libxext6 jq wget -y
 ENV GECKODRIVER_VER v0.29.1
 ENV FIREFOX_VER 87.0
 
-# # Add latest FireFox
-# RUN set -x \
-#    && apt install -y \
-#        libx11-xcb1 \
-#        libdbus-glib-1-2 \
-#    && curl -sSLO https://download-installer.cdn.mozilla.net/pub/firefox/releases/${FIREFOX_VER}/linux-x86_64/en-US/firefox-${FIREFOX_VER}.tar.bz2 \
-#    && tar -jxf firefox-* \
-#    && mv firefox /opt/ \
-#    && chmod 755 /opt/firefox \
-#    && chmod 755 /opt/firefox/firefox
-  
-# # Add geckodriver
-# RUN set -x \
-#    && curl -sSLO https://github.com/mozilla/geckodriver/releases/download/${GECKODRIVER_VER}/geckodriver-${GECKODRIVER_VER}-linux64.tar.gz \
-#    && tar zxf geckodriver-*.tar.gz \
-#    && mv geckodriver /usr/bin/
-
 USER root
 
 #=========
@@ -53,11 +36,8 @@ RUN GK_VERSION=$(if [ ${GECKODRIVER_VERSION:-latest} = "latest" ]; then echo "0.
   && mv /opt/geckodriver /opt/geckodriver-$GK_VERSION \
   && chmod 755 /opt/geckodriver-$GK_VERSION \
   && ln -fs /opt/geckodriver-$GK_VERSION /usr/bin/geckodriver
-  
+
 COPY requirements.txt .
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
-# RUN apt-get install 'ffmpeg'\
-#     'libsm6'\ 
-#     'libxext6'  -y
 CMD [ "/bin/bash" ]
