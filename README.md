@@ -20,9 +20,9 @@ sudo docker build --tag tbgen:v1 .
 ```
 sudo docker run -it --rm -v ~/repo/TIES_DataGeneration:/tf/repo tbgen:v1 /bin/bash
 ```
-5. Follow the instructions and open the URL in your host web browser: http://127.0.0.1:8888/?token=...
-6. Start generate table data:
+5. Start generate table data:
 ```
+cd tf/repo
 python generate_data.py --filesize 1 --threads 2 --imagespath UNLV_dataset/unlv_images --ocrpath UNLV_dataset/unlv_xml_ocr --tablepath UNLV_dataset/unlv_xml_ocr --visualizeimgs 1 --visualizebboxes 1
 ```
 
