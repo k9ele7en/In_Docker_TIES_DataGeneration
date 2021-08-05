@@ -9,8 +9,8 @@ Contribute some code:
 0. Download data from https://drive.google.com/drive/folders/1yES8Se8pyGsvLt92dJFz7z7AJQHjt4GA?usp=sharing, then extract (here) into TIES_DataGeneration/ULNV_dataset
 1. Clone the repo:
 ```
-$ git clone https://github.com/k9ele7en/TIES_DataGeneration.git
-$ cd TIES_DataGeneration
+git clone https://github.com/k9ele7en/TIES_DataGeneration.git
+cd TIES_DataGeneration
 ```
 3. Build Docker image:
 ```
@@ -18,12 +18,12 @@ sudo docker build --tag tbgen:v1 .
 ```
 4. Run Docker container with built image:
 ```
-$ docker run -it --rm -v .:/tf/notebooks -p 8888:8888 tbgen:v1 jupyter notebook --allow-root
+docker run -it --rm -v .:/tf/notebooks -p 8888:8888 tbgen:v1 jupyter notebook --allow-root
 ```
 5. Follow the instructions and open the URL in your host web browser: http://127.0.0.1:8888/?token=...
 6. Start generate table data:
 ```
-$ python generate_data.py --filesize 1 --threads 4 --imagespath UNLV_dataset\unlv_images --ocrpath UNLV_dataset\unlv_xml_ocr --tablepath UNLV_dataset\unlv_xml_ocr --visualizeimgs 1 --visualizebboxes 1
+python generate_data.py --filesize 1 --threads 4 --imagespath UNLV_dataset\unlv_images --ocrpath UNLV_dataset\unlv_xml_ocr --tablepath UNLV_dataset\unlv_xml_ocr --visualizeimgs 1 --visualizebboxes 1
 ```
 
 # Rethinking Table Parsing using Graph Neural Networks
