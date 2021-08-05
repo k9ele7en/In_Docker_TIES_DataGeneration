@@ -4,4 +4,3 @@ selenium
 tqdm
 Pillow
 scikit-image
-pickle
