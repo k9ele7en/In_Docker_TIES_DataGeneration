@@ -1,6 +1,6 @@
 FROM tensorflow/tensorflow:latest
 RUN apt-get update && apt-get install --no-install-recommends --no-install-suggests -y curl
-RUN apt-get install ffmpeg libsm6 libxext6 jq -y
+RUN apt-get install ffmpeg libsm6 libxext6 jq wget -y
 
 # Firefox browser to run the tests
 RUN apt-get install -y firefox
