@@ -19,6 +19,7 @@ from selenium.webdriver import Firefox
 from selenium.webdriver import PhantomJS
 import warnings
 from TableGeneration.Transformation import *
+from icecream import ic
 
 def warn(*args,**kwargs):
     pass
@@ -271,18 +272,23 @@ class GenerateTFRecord:
             if(data_arr is not None):
                 if(len(data_arr)==filesize):
                     with tf.io.TFRecordWriter(os.path.join(self.outtfpath,output_file_name),options=options) as writer:
+                        ic('start')
                         try:
                             for imgindex,subarr in enumerate(data_arr):
                                 arr=subarr[0]
+                                ic(arr)
 
                                 img=np.asarray(subarr[1][0],np.int64)[:,:,0]
                                 colmatrix = np.array(arr[1],dtype=np.int64)
+                                ic(1)
                                 cellmatrix = np.array(arr[2],dtype=np.int64)
                                 rowmatrix = np.array(arr[0],dtype=np.int64)
                                 bboxes = np.array(arr[3])
                                 tablecategory=arr[4][0]
+                                ic('here')
                                 seq_ex = self.generate_tf_record(img, cellmatrix, rowmatrix, colmatrix, bboxes,tablecategory,imgindex,output_file_name)
                                 writer.write(seq_ex.SerializeToString())
+                                ic(2)
                             print('\nThread :',threadnum,' Completed in ',time.time()-starttime,' ' ,output_file_name,'with len:',(len(data_arr)))
                             print('category 1: ',all_table_categories[0],', category 2: ',all_table_categories[1],', category 3: ',all_table_categories[2],', category 4: ',all_table_categories[3])
                         except Exception as e:

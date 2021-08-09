@@ -4,3 +4,4 @@ selenium
 tqdm
 Pillow
 scikit-image
+icecream
