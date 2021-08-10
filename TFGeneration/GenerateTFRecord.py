@@ -176,24 +176,24 @@ class GenerateTFRecord:
                         
                         #if(apply_shear==True):
                         
-                        # if(assigned_category+1==4):
-                        #     #randomly select shear and rotation levels
-                        #     while(True):
-                        #         ic('cat=4')
-                        #         shearval = np.random.uniform(self.minshearval, self.maxshearval)
-                        #         rotval = np.random.uniform(self.minrotval, self.maxrotval)
-                        #         ic(shearval, rotval)
-                        #         if(shearval!=0.0 or rotval!=0.0):
-                        #             ic('gonna break')
-                        #             break
-                        #         break
+                        if(assigned_category+1==4):
+                            #randomly select shear and rotation levels
+                            while(True):
+                                ic('cat=4')
+                                shearval = np.random.uniform(self.minshearval, self.maxshearval)
+                                rotval = np.random.uniform(self.minrotval, self.maxrotval)
+                                ic(shearval, rotval)
+                                if(shearval!=0.0 or rotval!=0.0):
+                                    ic('gonna break')
+                                    break
+
                             #If the image is transformed, then its categorycategory is 4
 
                             #transform image and bounding boxes of the words
                             
-                            # im, bboxes = Transform(im, bboxes, shearval, rotval, self.max_width, self.max_height)
+                            im, bboxes = Transform(im, bboxes, shearval, rotval, self.max_width, self.max_height)
                             
-                            # tablecategory=4
+                            tablecategory=4
                             # ic(bboxes)
                                 
 
