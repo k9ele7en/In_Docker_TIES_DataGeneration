@@ -140,6 +140,7 @@ class GenerateTFRecord:
         return seq_ex
 
     def generate_tables(self,driver,N_imgs,output_file_name):
+        ic('gentb1')
         row_col_min=[self.row_min,self.col_min]                 #to randomly select number of rows
         row_col_max=[self.row_max,self.col_max]                 #to randomly select number of columns
         rc_arr = np.random.uniform(low=row_col_min, high=row_col_max, size=(N_imgs, 2))        #random row and col selection for N images
@@ -147,6 +148,7 @@ class GenerateTFRecord:
         rc_arr[:,0]=rc_arr[:,0]+2                                     #increasing the number of rows by a fix 2. (We can comment out this line. Does not affect much)
         data_arr=[]
         exceptioncount=0
+        ic('gentb2')
 
         rc_count=0                                              #for iterating through row and col array
         for assigned_category,cat_count in enumerate(self.tables_cat_dist):
@@ -333,8 +335,11 @@ class GenerateTFRecord:
         threads=[]
         for threadnum in range(max_threads):
             proc = Process(target=self.write_tf, args=(self.filesize, threadnum,))
+            ic('th1')
             proc.start()
+            ic('th2')
             threads.append(proc)
+            ic('th3')
 
         for proc in threads:
             proc.join()
