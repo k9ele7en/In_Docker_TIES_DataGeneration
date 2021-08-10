@@ -3,7 +3,7 @@ from skimage import io,img_as_ubyte
 from skimage import transform
 import numpy as np
 from PIL import Image,ImageDraw
-
+from icecream import ic
 
 def find_new_points(matrix,x,y):
     pts=np.array([[x,y,0]])
@@ -60,15 +60,19 @@ def pad_original_image(img,transformation_matrix,max_width,max_height):
     return a4im,offsetx,offsety
 
 def Transform(img,bboxes,shearval,rotval,max_width,max_height):
+    ic('ts1')
     bboxes=np.array(np.array(bboxes))
     othersinfo=bboxes[:,:2]
     bboxes=np.array(np.array(bboxes)[:,2:],dtype=np.int64)
 
     afine_tf = transform.AffineTransform(shear=shearval,rotation=rotval)
+    ic('ts2')
+
     points_transformation = transform.AffineTransform(shear=-1*shearval,rotation=-1*rotval)
     #img,offsetx,offsety=pad_original_image(Image.fromarray(img.astype(np.uint8)),points_transformation.params,max_width,max_height)
     img, offsetx, offsety = pad_original_image(img, points_transformation.params,
                                                max_width, max_height)
+    ic('ts3')
 
     min_pts=bboxes[:,:2]
     max_pts=bboxes[:,2:]
@@ -86,6 +90,7 @@ def Transform(img,bboxes,shearval,rotval,max_width,max_height):
     max_pts = np.dot(max_pts, points_transformation.params.T)[:,:2]
 
     transformed_bboxes=np.concatenate((min_pts,max_pts),axis=1)
+    ic('ts4')
 
     transformed_image = transform.warp(img, inverse_map=afine_tf)
     out=img_as_ubyte(transformed_image)
@@ -100,6 +105,7 @@ def Transform(img,bboxes,shearval,rotval,max_width,max_height):
     transformed_bboxes[:,1]=(transformed_bboxes[:,1]/height)*new_height
     transformed_bboxes[:,2] = (transformed_bboxes[:,2] / width) * new_width
     transformed_bboxes[:,3] = (transformed_bboxes[:,3] / height) * new_height
+    ic('ts5')
 
 
     outbbox=out.getbbox()
