@@ -149,7 +149,7 @@ class GenerateTFRecord:
         exceptioncount=0
 
         rc_count=0                                              #for iterating through row and col array
-        ic(tables_cat_dist)
+        ic(self.tables_cat_dist)
         for assigned_category,cat_count in enumerate(self.tables_cat_dist):
             for _ in range(cat_count):
                 rows = int(round(rc_arr[rc_count][0]))
