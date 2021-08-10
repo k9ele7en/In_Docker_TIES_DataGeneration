@@ -60,19 +60,16 @@ def pad_original_image(img,transformation_matrix,max_width,max_height):
     return a4im,offsetx,offsety
 
 def Transform(img,bboxes,shearval,rotval,max_width,max_height):
-    ic('ts1')
     bboxes=np.array(np.array(bboxes))
     othersinfo=bboxes[:,:2]
     bboxes=np.array(np.array(bboxes)[:,2:],dtype=np.int64)
 
     afine_tf = transform.AffineTransform(shear=shearval,rotation=rotval)
-    ic('ts2')
 
     points_transformation = transform.AffineTransform(shear=-1*shearval,rotation=-1*rotval)
     #img,offsetx,offsety=pad_original_image(Image.fromarray(img.astype(np.uint8)),points_transformation.params,max_width,max_height)
     img, offsetx, offsety = pad_original_image(img, points_transformation.params,
                                                max_width, max_height)
-    ic('ts3')
 
     min_pts=bboxes[:,:2]
     max_pts=bboxes[:,2:]
@@ -93,13 +90,17 @@ def Transform(img,bboxes,shearval,rotval,max_width,max_height):
     ic('ts4')
 
     transformed_image = transform.warp(img, inverse_map=afine_tf)
+    ic('ts4.1')
+
     out=img_as_ubyte(transformed_image)
+    ic('ts5')
     out=Image.fromarray(out)
     width,height=out.size
     new_width = max_width
     new_height = new_width * height / width
+    ic('ts5.1')
     out.thumbnail((new_width,new_height),Image.ANTIALIAS)
-    ic('ts5')
+    ic('ts6')
 
     transformed_bboxes=np.array(transformed_bboxes)
     transformed_bboxes[:,0]=(transformed_bboxes[:,0]/width)*new_width
