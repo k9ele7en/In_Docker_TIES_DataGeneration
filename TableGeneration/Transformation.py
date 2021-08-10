@@ -99,13 +99,13 @@ def Transform(img,bboxes,shearval,rotval,max_width,max_height):
     new_width = max_width
     new_height = new_width * height / width
     out.thumbnail((new_width,new_height),Image.ANTIALIAS)
+    ic('ts5')
 
     transformed_bboxes=np.array(transformed_bboxes)
     transformed_bboxes[:,0]=(transformed_bboxes[:,0]/width)*new_width
     transformed_bboxes[:,1]=(transformed_bboxes[:,1]/height)*new_height
     transformed_bboxes[:,2] = (transformed_bboxes[:,2] / width) * new_width
     transformed_bboxes[:,3] = (transformed_bboxes[:,3] / height) * new_height
-    ic('ts5')
 
 
     outbbox=out.getbbox()

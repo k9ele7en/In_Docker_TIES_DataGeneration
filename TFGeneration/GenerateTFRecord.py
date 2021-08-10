@@ -149,7 +149,7 @@ class GenerateTFRecord:
         exceptioncount=0
 
         rc_count=0                                              #for iterating through row and col array
-        ic(self.tables_cat_dist)
+        # ic(self.tables_cat_dist)
         for assigned_category,cat_count in enumerate(self.tables_cat_dist):
             for _ in range(cat_count):
                 rows = int(round(rc_arr[rc_count][0]))
@@ -182,15 +182,12 @@ class GenerateTFRecord:
                                 ic('cat=4')
                                 shearval = np.random.uniform(self.minshearval, self.maxshearval)
                                 rotval = np.random.uniform(self.minrotval, self.maxrotval)
-                                ic(shearval, rotval)
                                 if(shearval!=0.0 or rotval!=0.0):
-                                    ic('gonna break')
                                     break
 
                             #If the image is transformed, then its categorycategory is 4
 
                             #transform image and bounding boxes of the words
-                            ic('after break')
                             im, bboxes = Transform(im, bboxes, shearval, rotval, self.max_width, self.max_height)
                             ic('pass transform')
                             tablecategory=4
@@ -205,7 +202,6 @@ class GenerateTFRecord:
                             f.close()
                             im.save(os.path.join(dirname,'img',str(rc_count)+output_file_name.replace('.tfrecord','.png')), dpi=(600, 600))
                             imgname = os.path.join(dirname,'img',str(rc_count)+output_file_name.replace('.tfrecord','.png'))
-                            ic(imgname)
 
                         # driver.quit()
                         # 0/0
