@@ -149,6 +149,7 @@ class GenerateTFRecord:
         exceptioncount=0
 
         rc_count=0                                              #for iterating through row and col array
+        ic(tables_cat_dist)
         for assigned_category,cat_count in enumerate(self.tables_cat_dist):
             for _ in range(cat_count):
                 rows = int(round(rc_arr[rc_count][0]))
@@ -180,12 +181,13 @@ class GenerateTFRecord:
                                 rotval = np.random.uniform(self.minrotval, self.maxrotval)
                                 if(shearval!=0.0 or rotval!=0.0):
                                     break
+                                ic(shearval, rotval)
                             #If the image is transformed, then its categorycategory is 4
 
                             #transform image and bounding boxes of the words
                             im, bboxes = Transform(im, bboxes, shearval, rotval, self.max_width, self.max_height)
                             tablecategory=4
-                                
+                            ic(bboxes)
                                 
 
                         if(self.visualizeimgs):
