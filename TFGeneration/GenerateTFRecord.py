@@ -266,13 +266,15 @@ class GenerateTFRecord:
             #randomly select a name of length=20 for tfrecords file.
             output_file_name = ''.join(random.choices(string.ascii_uppercase + string.digits, k=20)) + '.tfrecord'
             print('\nThread: ',threadnum,' Started:', output_file_name)
-
+            ic(0)
             #data_arr contains the images of generated tables and all_table_categories contains the table category of each of the table
             data_arr,all_table_categories = self.generate_tables(driver, filesize, output_file_name)
+            ic(1)
             if(data_arr is not None):
                 if(len(data_arr)==filesize):
+                    ic(2)
                     with tf.io.TFRecordWriter(os.path.join(self.outtfpath,output_file_name),options=options) as writer:
-                        ic('start')
+                        ic(3)
                         try:
                             for imgindex,subarr in enumerate(data_arr):
                                 arr=subarr[0]
@@ -280,15 +282,15 @@ class GenerateTFRecord:
 
                                 img=np.asarray(subarr[1][0],np.int64)[:,:,0]
                                 colmatrix = np.array(arr[1],dtype=np.int64)
-                                ic(1)
+                                ic(4)
                                 cellmatrix = np.array(arr[2],dtype=np.int64)
                                 rowmatrix = np.array(arr[0],dtype=np.int64)
                                 bboxes = np.array(arr[3])
                                 tablecategory=arr[4][0]
-                                ic('here')
+                                ic(5)
                                 seq_ex = self.generate_tf_record(img, cellmatrix, rowmatrix, colmatrix, bboxes,tablecategory,imgindex,output_file_name)
                                 writer.write(seq_ex.SerializeToString())
-                                ic(2)
+                                ic(6)
                             print('\nThread :',threadnum,' Completed in ',time.time()-starttime,' ' ,output_file_name,'with len:',(len(data_arr)))
                             print('category 1: ',all_table_categories[0],', category 2: ',all_table_categories[1],', category 3: ',all_table_categories[2],', category 4: ',all_table_categories[3])
                         except Exception as e:
