@@ -25,6 +25,11 @@ sudo docker run -it --rm -v ~/repo/TIES_DataGeneration:/tf/repo tbgen:v1 /bin/ba
 cd tf/repo
 python generate_data.py --filesize 1 --threads 2 --imagespath UNLV_dataset/unlv_images --ocrpath UNLV_dataset/unlv_xml_ocr --tablepath UNLV_dataset/unlv_xml_ocr --visualizeimgs 1 --visualizebboxes 1
 ```
+or
+```
+cd tf/repo
+sh generator.sh
+```
 
 # Rethinking Table Parsing using Graph Neural Networks
 
