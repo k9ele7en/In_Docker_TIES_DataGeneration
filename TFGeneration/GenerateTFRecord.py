@@ -140,7 +140,6 @@ class GenerateTFRecord:
         return seq_ex
 
     def generate_tables(self,driver,N_imgs,output_file_name):
-        ic('gentb1')
         row_col_min=[self.row_min,self.col_min]                 #to randomly select number of rows
         row_col_max=[self.row_max,self.col_max]                 #to randomly select number of columns
         rc_arr = np.random.uniform(low=row_col_min, high=row_col_max, size=(N_imgs, 2))        #random row and col selection for N images
@@ -148,14 +147,12 @@ class GenerateTFRecord:
         rc_arr[:,0]=rc_arr[:,0]+2                                     #increasing the number of rows by a fix 2. (We can comment out this line. Does not affect much)
         data_arr=[]
         exceptioncount=0
-        ic('gentb2')
 
         rc_count=0                                              #for iterating through row and col array
         for assigned_category,cat_count in enumerate(self.tables_cat_dist):
             for _ in range(cat_count):
                 rows = int(round(rc_arr[rc_count][0]))
                 cols = int(round(rc_arr[rc_count][1]))
-                ic('gentb3')
             
                 exceptcount=0
                 while(True):
@@ -170,7 +167,7 @@ class GenerateTFRecord:
                         #convert this html code to image using selenium webdriver. Get equivalent bounding boxes
                         #for each word in the table. This will generate ground truth for our problem
                         im,bboxes = html_to_img(driver, html_content, id_count)
-                        ic('gentb4')
+                        ic('loop gen img')
 
                         # apply_shear: bool - True: Apply Transformation, False: No Transformation | probability weight for shearing to be 25%
                         #apply_shear = random.choices([True, False],weights=[0.25,0.75])[0]
@@ -198,12 +195,14 @@ class GenerateTFRecord:
                             f.write(html_content)
                             f.close()
                             im.save(os.path.join(dirname,'img',str(rc_count)+output_file_name.replace('.tfrecord','.png')), dpi=(600, 600))
+                            ic(os.path.join(dirname,'img',str(rc_count)+output_file_name.replace('.tfrecord','.png')))
 
                         # driver.quit()
                         # 0/0
                         data_arr.append([[same_row_matrix, same_col_matrix, same_cell_matrix, bboxes,[tablecategory]],[im]])
                         all_table_categories[tablecategory-1]+=1
-                        #print('Assigned category: ',assigned_category+1,', generated category: ',tablecategory)
+                        ic(all_table_categories)
+                        print('Assigned category: ',assigned_category+1,', generated category: ',tablecategory)
                         break
                     except Exception as e:
                         #traceback.print_exc()
