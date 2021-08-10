@@ -175,17 +175,18 @@ class GenerateTFRecord:
                         #apply_shear = random.choices([True, False],weights=[0.25,0.75])[0]
                         
                         #if(apply_shear==True):
-                        if(assigned_category+1==4):
-                            #randomly select shear and rotation levels
-                            while(True):
-                                ic('cat=4')
-                                shearval = np.random.uniform(self.minshearval, self.maxshearval)
-                                rotval = np.random.uniform(self.minrotval, self.maxrotval)
-                                ic(shearval, rotval)
-                                if(shearval!=0.0 or rotval!=0.0):
-                                    ic('gonna break')
-                                    break
-                                break
+                        
+                        # if(assigned_category+1==4):
+                        #     #randomly select shear and rotation levels
+                        #     while(True):
+                        #         ic('cat=4')
+                        #         shearval = np.random.uniform(self.minshearval, self.maxshearval)
+                        #         rotval = np.random.uniform(self.minrotval, self.maxrotval)
+                        #         ic(shearval, rotval)
+                        #         if(shearval!=0.0 or rotval!=0.0):
+                        #             ic('gonna break')
+                        #             break
+                        #         break
                             #If the image is transformed, then its categorycategory is 4
 
                             #transform image and bounding boxes of the words
