@@ -170,6 +170,7 @@ class GenerateTFRecord:
                         im,bboxes = html_to_img(driver, html_content, id_count)
                         ic('loop gen img')
                         ic(assigned_category)
+                        ic(bboxes)
 
                         # apply_shear: bool - True: Apply Transformation, False: No Transformation | probability weight for shearing to be 25%
                         #apply_shear = random.choices([True, False],weights=[0.25,0.75])[0]
@@ -178,11 +179,13 @@ class GenerateTFRecord:
                         if(assigned_category+1==4):
                             #randomly select shear and rotation levels
                             while(True):
+                                ic('cat=4')
                                 shearval = np.random.uniform(self.minshearval, self.maxshearval)
                                 rotval = np.random.uniform(self.minrotval, self.maxrotval)
-                                if(shearval!=0.0 or rotval!=0.0):
-                                    break
                                 ic(shearval, rotval)
+                                if(shearval!=0.0 or rotval!=0.0):
+                                    ic('gonna break')
+                                    break
                             #If the image is transformed, then its categorycategory is 4
 
                             #transform image and bounding boxes of the words
