@@ -195,7 +195,8 @@ class GenerateTFRecord:
                             f.write(html_content)
                             f.close()
                             im.save(os.path.join(dirname,'img',str(rc_count)+output_file_name.replace('.tfrecord','.png')), dpi=(600, 600))
-                            ic(os.path.join(dirname,'img',str(rc_count)+output_file_name.replace('.tfrecord','.png')))
+                            imgname = os.path.join(dirname,'img',str(rc_count)+output_file_name.replace('.tfrecord','.png'))
+                            ic(imgname)
 
                         # driver.quit()
                         # 0/0
