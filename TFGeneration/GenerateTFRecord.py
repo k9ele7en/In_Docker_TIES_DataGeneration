@@ -154,7 +154,6 @@ class GenerateTFRecord:
             for _ in range(cat_count):
                 rows = int(round(rc_arr[rc_count][0]))
                 cols = int(round(rc_arr[rc_count][1]))
-                ic(assigned_category, _, cat_count)
                 exceptcount=0
                 while(True):
                     #This loop is to repeat and retry generating image if some an exception is encountered.
@@ -168,9 +167,9 @@ class GenerateTFRecord:
                         #convert this html code to image using selenium webdriver. Get equivalent bounding boxes
                         #for each word in the table. This will generate ground truth for our problem
                         im,bboxes = html_to_img(driver, html_content, id_count)
-                        ic('loop gen img')
-                        ic(assigned_category)
-                        ic(bboxes)
+                        ic('loop, current: ', assigned_category, _, cat_count)
+
+                        # ic(bboxes)
 
                         # apply_shear: bool - True: Apply Transformation, False: No Transformation | probability weight for shearing to be 25%
                         #apply_shear = random.choices([True, False],weights=[0.25,0.75])[0]
@@ -190,8 +189,8 @@ class GenerateTFRecord:
 
                             #transform image and bounding boxes of the words
                             im, bboxes = Transform(im, bboxes, shearval, rotval, self.max_width, self.max_height)
-                            tablecategory=4
-                            ic(bboxes)
+                            # tablecategory=4
+                            # ic(bboxes)
                                 
 
                         if(self.visualizeimgs):
