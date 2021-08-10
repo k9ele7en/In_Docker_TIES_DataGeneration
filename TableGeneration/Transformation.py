@@ -87,20 +87,17 @@ def Transform(img,bboxes,shearval,rotval,max_width,max_height):
     max_pts = np.dot(max_pts, points_transformation.params.T)[:,:2]
 
     transformed_bboxes=np.concatenate((min_pts,max_pts),axis=1)
-    ic('ts4')
+    ic('error here, cant pass .warp')
     ic(img)
     ic(afine_tf)
     transformed_image = transform.warp(img, inverse_map=afine_tf)
 
     out=img_as_ubyte(transformed_image)
-    ic('ts5')
     out=Image.fromarray(out)
     width,height=out.size
     new_width = max_width
     new_height = new_width * height / width
-    ic('ts5.1')
     out.thumbnail((new_width,new_height),Image.ANTIALIAS)
-    ic('ts6')
 
     transformed_bboxes=np.array(transformed_bboxes)
     transformed_bboxes[:,0]=(transformed_bboxes[:,0]/width)*new_width
