@@ -188,10 +188,9 @@ class GenerateTFRecord:
                             #If the image is transformed, then its categorycategory is 4
 
                             #transform image and bounding boxes of the words
-                            im, bboxes = Transform(im, bboxes, shearval, rotval, self.max_width, self.max_height)
-                            ic('pass transform')
+                            # im, bboxes = Transform(im, bboxes, shearval, rotval, self.max_width, self.max_height)
+                            # ic('pass transform')
                             tablecategory=4
-                            # ic(bboxes)
                                 
 
                         if(self.visualizeimgs):
