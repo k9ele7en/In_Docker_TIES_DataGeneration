@@ -185,6 +185,7 @@ class GenerateTFRecord:
                                 if(shearval!=0.0 or rotval!=0.0):
                                     ic('gonna break')
                                     break
+                                break
                             #If the image is transformed, then its categorycategory is 4
 
                             #transform image and bounding boxes of the words
