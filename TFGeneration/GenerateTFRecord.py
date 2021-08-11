@@ -144,18 +144,19 @@ class GenerateTFRecord:
         featurejs['adjacency_matrix_rows'] = rowmatrix.astype(np.int64).flatten()
         featurejs['vertex_text'] = vertex_text.astype(np.int64).flatten()
         
+        ic(featurejs)
+        # jsonString = json.dumps(featurejs)
+        # output_file_name=output_file_name.replace('.tfrecord','.json')
 
-        jsonString = json.dumps(featurejs)
-        output_file_name=output_file_name.replace('.tfrecord','.json')
-
-        jsonFile = open(output_file_name, "w")
-        jsonFile.write(jsonString)
-        jsonFile.close()
+        # jsonFile = open(output_file_name, "w")
+        # jsonFile.write(jsonString)
+        # jsonFile.close()
 
         all_features = tf.train.Features(feature=feature)
 
 
         seq_ex = tf.train.Example(features=all_features)
+        ic(seq_ex)
         return seq_ex
 
     def generate_tables(self,driver,N_imgs,output_file_name):
@@ -312,6 +313,13 @@ class GenerateTFRecord:
                                 tablecategory=arr[4][0]
                                 seq_ex = self.generate_tf_record(img, cellmatrix, rowmatrix, colmatrix, bboxes,tablecategory,imgindex,output_file_name)
                                 writer.write(seq_ex.SerializeToString())
+                                
+                                jsonString = json.dumps(seq_ex.SerializeToString())
+                                output_file_name=output_file_name.replace('.tfrecord','.json')
+                                jsonFile = open(output_file_name, "w")
+                                jsonFile.write(jsonString)
+                                jsonFile.close()
+
                             print('\nThread :',threadnum,' Completed in ',time.time()-starttime,' ' ,output_file_name,'with len:',(len(data_arr)))
                             print('category 1: ',all_table_categories[0],', category 2: ',all_table_categories[1],', category 3: ',all_table_categories[2],', category 4: ',all_table_categories[3])
                         except Exception as e:
