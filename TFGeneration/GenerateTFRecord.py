@@ -301,7 +301,7 @@ class GenerateTFRecord:
         assert opts.headless
         #driver=PhantomJS()
         driver = Firefox(options=opts)
-        i = 1
+        i = 0
         while(True):
             starttime = time.time()
 
@@ -310,6 +310,7 @@ class GenerateTFRecord:
             print('\nThread: ',threadnum,' Started:', output_file_name)
             #data_arr contains the images of generated tables and all_table_categories contains the table category of each of the table
             data_arr,all_table_categories = self.generate_tables(driver, filesize, output_file_name)
+            i+=1
             if(data_arr is not None):
                 if(len(data_arr)==filesize):
                     try:
@@ -317,6 +318,7 @@ class GenerateTFRecord:
                             arr=subarr[0]
 
                             img=np.asarray(subarr[1][0],np.int64)[:,:,0]
+                            ic(i)
                             colmatrix = np.array(arr[1],dtype=np.int64)
                             cellmatrix = np.array(arr[2],dtype=np.int64)
                             rowmatrix = np.array(arr[0],dtype=np.int64)
