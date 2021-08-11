@@ -157,6 +157,11 @@ class GenerateTFRecord:
         featurejs['vertex_text_shp'] = vertex_text.shape
         featurejs['vertex_text'] = vertex_text.astype(np.int64).flatten().tolist()
         
+        a_file = open('visualizeimgs/cat'+str(tablecategory)+'_'+str(i)+"_matrix.txt", "w")
+        for row in cellmatrix:
+            np.savetxt(a_file, row)
+        a_file.close()
+
         jsonString = json.dumps(featurejs)
         output_file_name=output_file_name.replace('.tfrecord','.json')
 
