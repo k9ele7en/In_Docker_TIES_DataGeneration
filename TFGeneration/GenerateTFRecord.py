@@ -320,8 +320,8 @@ class GenerateTFRecord:
                             ic(colmatrix)
                             ic(cellmatrix)
 
-                            i+=1
                             seq_ex = self.generate_tf_record(i, img, cellmatrix, rowmatrix, colmatrix, bboxes,tablecategory,imgindex,output_file_name)
+                            i+=1
                         
                         print('\nThread :',threadnum,' Completed in ',time.time()-starttime,' ' ,output_file_name,'with len:',(len(data_arr)))
                         print('category 1: ',all_table_categories[0],', category 2: ',all_table_categories[1],', category 3: ',all_table_categories[2],', category 4: ',all_table_categories[3])
