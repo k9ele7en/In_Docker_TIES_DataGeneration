@@ -145,11 +145,11 @@ class GenerateTFRecord:
         featurejs['adjacency_matrix_rows'] = rowmatrix.astype(np.int64).flatten().tolist()
         featurejs['vertex_text'] = vertex_text.astype(np.int64).flatten().tolist()
         
-        ic(featurejs)
+        ic('write js')
         jsonString = json.dumps(featurejs)
         output_file_name=output_file_name.replace('.tfrecord','.json')
 
-        jsonFile = open(i+'.jpg', "w")
+        jsonFile = open(i+'.json', "w")
         jsonFile.write(jsonString)
         jsonFile.close()
         i+=1
