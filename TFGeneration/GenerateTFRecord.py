@@ -156,7 +156,7 @@ class GenerateTFRecord:
         jsonString = json.dumps(featurejs)
         output_file_name=output_file_name.replace('.tfrecord','.json')
 
-        jsonFile = open(str(i)+'.json', "w")
+        jsonFile = open('visualizeimgs/'+str(i)+'.json', "w")
         jsonFile.write(jsonString)
         jsonFile.close()
         i+=1
