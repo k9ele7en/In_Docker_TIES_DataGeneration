@@ -139,7 +139,7 @@ class GenerateTFRecord:
         featurejs = dict()
         im=im.astype(np.int64)
         # img=img.astype(np.uint8)
-        cv2.imwrite('visualizeimgs/cat'+str(tablecategory)+'_'+'+str(i)+'.jpg',im)
+        cv2.imwrite('visualizeimgs/cat'+str(tablecategory)+'_'+str(i)+'.jpg',im)
 
         # featurejs['image'] = im.astype(np.float32).flatten().tolist()
         featurejs['img_i'] = 'cat'+str(tablecategory)+'_'+str(i)
