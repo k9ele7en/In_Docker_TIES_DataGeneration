@@ -146,6 +146,8 @@ class GenerateTFRecord:
         featurejs['bboxes'] = arr.tolist()
         
         featurejs['global_features'] = np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten().tolist()
+        featurejs['vertex_features_shp'] = vertex_features.shape
+        featurejs['vertex_features_shps'] = str(vertex_features.shape)
         featurejs['vertex_features'] = vertex_features.astype(np.float32).flatten().tolist()
         featurejs['adjacency_matrix_cells'] = cellmatrix.astype(np.int64).flatten().tolist()
         featurejs['adjacency_matrix_cols'] = colmatrix.astype(np.int64).flatten().tolist()
