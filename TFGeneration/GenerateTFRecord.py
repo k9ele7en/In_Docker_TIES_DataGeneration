@@ -137,14 +137,15 @@ class GenerateTFRecord:
         # json
         i=1
         featurejs = dict()
-        featurejs['image'] = im.astype(np.float32).flatten().tolist()
+        # featurejs['image'] = im.astype(np.float32).flatten().tolist()
+        featurejs['img_i'] = str(i)
         featurejs['global_features'] = np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten().tolist()
         featurejs['vertex_features'] = vertex_features.astype(np.float32).flatten().tolist()
         featurejs['adjacency_matrix_cells'] = cellmatrix.astype(np.int64).flatten().tolist()
         featurejs['adjacency_matrix_cols'] = colmatrix.astype(np.int64).flatten().tolist()
         featurejs['adjacency_matrix_rows'] = rowmatrix.astype(np.int64).flatten().tolist()
         featurejs['vertex_text'] = vertex_text.astype(np.int64).flatten().tolist()
-        
+        featurejs['bboxes'] = arr.tolist()
         ic('write js')
         jsonString = json.dumps(featurejs)
         output_file_name=output_file_name.replace('.tfrecord','.json')
