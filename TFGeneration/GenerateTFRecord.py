@@ -135,16 +135,16 @@ class GenerateTFRecord:
         feature['vertex_text'] = tf.train.Feature(int64_list=tf.train.Int64List(value=vertex_text.astype(np.int64).flatten()))
         
         # json
-        featurejs = dict()
-        featurejs['image'] = im.astype(np.float32).flatten()
-        featurejs['global_features'] = np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten()
-        featurejs['vertex_features'] = vertex_features.astype(np.float32).flatten()
-        featurejs['adjacency_matrix_cells'] = cellmatrix.astype(np.int64).flatten()
-        featurejs['adjacency_matrix_cols'] = colmatrix.astype(np.int64).flatten()
-        featurejs['adjacency_matrix_rows'] = rowmatrix.astype(np.int64).flatten()
-        featurejs['vertex_text'] = vertex_text.astype(np.int64).flatten()
+        # featurejs = dict()
+        # featurejs['image'] = im.astype(np.float32).flatten()
+        # featurejs['global_features'] = np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten()
+        # featurejs['vertex_features'] = vertex_features.astype(np.float32).flatten()
+        # featurejs['adjacency_matrix_cells'] = cellmatrix.astype(np.int64).flatten()
+        # featurejs['adjacency_matrix_cols'] = colmatrix.astype(np.int64).flatten()
+        # featurejs['adjacency_matrix_rows'] = rowmatrix.astype(np.int64).flatten()
+        # featurejs['vertex_text'] = vertex_text.astype(np.int64).flatten()
         
-        ic(featurejs)
+        # ic(featurejs)
         # jsonString = json.dumps(featurejs)
         # output_file_name=output_file_name.replace('.tfrecord','.json')
 
@@ -311,14 +311,22 @@ class GenerateTFRecord:
                                 rowmatrix = np.array(arr[0],dtype=np.int64)
                                 bboxes = np.array(arr[3])
                                 tablecategory=arr[4][0]
+
+                                ic(imgindex)
+                                ic(colmatrix)
+                                ic(cellmatrix)
+                                ic(rowmatrix)
+                                ic(bboxes)
+                                ic(tablecategory)
+
                                 seq_ex = self.generate_tf_record(img, cellmatrix, rowmatrix, colmatrix, bboxes,tablecategory,imgindex,output_file_name)
                                 writer.write(seq_ex.SerializeToString())
                                 
-                                jsonString = json.dumps(seq_ex.SerializeToString())
-                                output_file_name=output_file_name.replace('.tfrecord','.json')
-                                jsonFile = open(output_file_name, "w")
-                                jsonFile.write(jsonString)
-                                jsonFile.close()
+                                # jsonString = json.dumps(seq_ex.SerializeToString())
+                                # output_file_name=output_file_name.replace('.tfrecord','.json')
+                                # jsonFile = open(output_file_name, "w")
+                                # jsonFile.write(jsonString)
+                                # jsonFile.close()
 
                             print('\nThread :',threadnum,' Completed in ',time.time()-starttime,' ' ,output_file_name,'with len:',(len(data_arr)))
                             print('category 1: ',all_table_categories[0],', category 2: ',all_table_categories[1],', category 3: ',all_table_categories[2],', category 4: ',all_table_categories[3])
