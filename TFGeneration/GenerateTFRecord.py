@@ -139,10 +139,10 @@ class GenerateTFRecord:
         featurejs = dict()
         im=im.astype(np.int64)
         # img=img.astype(np.uint8)
-        cv2.imwrite('visualizeimgs/'+str(i)+'.jpg',im)
+        cv2.imwrite('visualizeimgs/cat'+str(tablecategory)+'_'+'+str(i)+'.jpg',im)
 
         # featurejs['image'] = im.astype(np.float32).flatten().tolist()
-        featurejs['img_i'] = str(i)
+        featurejs['img_i'] = 'cat'+str(tablecategory)+'_'+str(i)
         featurejs['bboxes'] = arr.tolist()
         
         featurejs['global_features'] = np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten().tolist()
@@ -160,7 +160,7 @@ class GenerateTFRecord:
         jsonString = json.dumps(featurejs)
         output_file_name=output_file_name.replace('.tfrecord','.json')
 
-        jsonFile = open('visualizeimgs/'+str(i)+'.json', "w")
+        jsonFile = open('visualizeimgs/cat'+str(tablecategory)+'_'+str(i)+'.json', "w")
         jsonFile.write(jsonString)
         jsonFile.close()
         # i+=1
@@ -301,7 +301,7 @@ class GenerateTFRecord:
         assert opts.headless
         #driver=PhantomJS()
         driver = Firefox(options=opts)
-        i = 0
+        i = 1
         while(True):
             starttime = time.time()
 
@@ -310,7 +310,6 @@ class GenerateTFRecord:
             print('\nThread: ',threadnum,' Started:', output_file_name)
             #data_arr contains the images of generated tables and all_table_categories contains the table category of each of the table
             data_arr,all_table_categories = self.generate_tables(driver, filesize, output_file_name)
-            i+=1
             if(data_arr is not None):
                 if(len(data_arr)==filesize):
                     try:
