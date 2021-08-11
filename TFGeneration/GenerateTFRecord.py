@@ -20,6 +20,7 @@ from selenium.webdriver import PhantomJS
 import warnings
 from TableGeneration.Transformation import *
 from icecream import ic
+import json
 
 def warn(*args,**kwargs):
     pass
@@ -133,6 +134,14 @@ class GenerateTFRecord:
         feature['adjacency_matrix_rows'] = tf.train.Feature(int64_list=tf.train.Int64List(value=rowmatrix.astype(np.int64).flatten()))
         feature['vertex_text'] = tf.train.Feature(int64_list=tf.train.Int64List(value=vertex_text.astype(np.int64).flatten()))
         
+        
+        jsonString = json.dumps(feature)
+        output_file_name=output_file_name.replace('.tfrecord','.json')
+
+        jsonFile = open(output_file_name, "w")
+        jsonFile.write(jsonString)
+        jsonFile.close()
+
         all_features = tf.train.Features(feature=feature)
 
 
