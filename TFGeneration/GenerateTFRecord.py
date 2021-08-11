@@ -94,7 +94,7 @@ class GenerateTFRecord:
         return dummy
 
 
-    def generate_tf_record(self, im, cellmatrix, rowmatrix, colmatrix, arr,tablecategory,imgindex,output_file_name):
+    def generate_tf_record(self, i, im, cellmatrix, rowmatrix, colmatrix, arr,tablecategory,imgindex,output_file_name):
         '''This function generates tfrecord files using given information'''
         cellmatrix=self.pad_with_zeros(cellmatrix,(self.num_of_max_vertices,self.num_of_max_vertices))
         colmatrix = self.pad_with_zeros(colmatrix, (self.num_of_max_vertices, self.num_of_max_vertices))
@@ -125,17 +125,17 @@ class GenerateTFRecord:
         vertex_text[:no_of_words]=np.array(list(map(self.str_to_int,words_arr)))
 
 
-        feature = dict()
-        feature['image'] = tf.train.Feature(float_list=tf.train.FloatList(value=im.astype(np.float32).flatten()))
-        feature['global_features'] = tf.train.Feature(float_list=tf.train.FloatList(value=np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten()))
-        feature['vertex_features'] = tf.train.Feature(float_list=tf.train.FloatList(value=vertex_features.astype(np.float32).flatten()))
-        feature['adjacency_matrix_cells'] = tf.train.Feature(int64_list=tf.train.Int64List(value=cellmatrix.astype(np.int64).flatten()))
-        feature['adjacency_matrix_cols'] = tf.train.Feature(int64_list=tf.train.Int64List(value=colmatrix.astype(np.int64).flatten()))
-        feature['adjacency_matrix_rows'] = tf.train.Feature(int64_list=tf.train.Int64List(value=rowmatrix.astype(np.int64).flatten()))
-        feature['vertex_text'] = tf.train.Feature(int64_list=tf.train.Int64List(value=vertex_text.astype(np.int64).flatten()))
+        # feature = dict()
+        # feature['image'] = tf.train.Feature(float_list=tf.train.FloatList(value=im.astype(np.float32).flatten()))
+        # feature['global_features'] = tf.train.Feature(float_list=tf.train.FloatList(value=np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten()))
+        # feature['vertex_features'] = tf.train.Feature(float_list=tf.train.FloatList(value=vertex_features.astype(np.float32).flatten()))
+        # feature['adjacency_matrix_cells'] = tf.train.Feature(int64_list=tf.train.Int64List(value=cellmatrix.astype(np.int64).flatten()))
+        # feature['adjacency_matrix_cols'] = tf.train.Feature(int64_list=tf.train.Int64List(value=colmatrix.astype(np.int64).flatten()))
+        # feature['adjacency_matrix_rows'] = tf.train.Feature(int64_list=tf.train.Int64List(value=rowmatrix.astype(np.int64).flatten()))
+        # feature['vertex_text'] = tf.train.Feature(int64_list=tf.train.Int64List(value=vertex_text.astype(np.int64).flatten()))
         
         # json
-        i=1
+        # i=1
         featurejs = dict()
         im=im.astype(np.int64)
         # img=img.astype(np.uint8)
@@ -145,27 +145,26 @@ class GenerateTFRecord:
         featurejs['img_i'] = str(i)
         featurejs['bboxes'] = arr.tolist()
         
-        # featurejs['global_features'] = np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten().tolist()
-        # featurejs['vertex_features'] = vertex_features.astype(np.float32).flatten().tolist()
-        # featurejs['adjacency_matrix_cells'] = cellmatrix.astype(np.int64).flatten().tolist()
-        # featurejs['adjacency_matrix_cols'] = colmatrix.astype(np.int64).flatten().tolist()
-        # featurejs['adjacency_matrix_rows'] = rowmatrix.astype(np.int64).flatten().tolist()
-        # featurejs['vertex_text'] = vertex_text.astype(np.int64).flatten().tolist()
+        featurejs['global_features'] = np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten().tolist()
+        featurejs['vertex_features'] = vertex_features.astype(np.float32).flatten().tolist()
+        featurejs['adjacency_matrix_cells'] = cellmatrix.astype(np.int64).flatten().tolist()
+        featurejs['adjacency_matrix_cols'] = colmatrix.astype(np.int64).flatten().tolist()
+        featurejs['adjacency_matrix_rows'] = rowmatrix.astype(np.int64).flatten().tolist()
+        featurejs['vertex_text'] = vertex_text.astype(np.int64).flatten().tolist()
         
-        ic('write js')
         jsonString = json.dumps(featurejs)
         output_file_name=output_file_name.replace('.tfrecord','.json')
 
         jsonFile = open('visualizeimgs/'+str(i)+'.json', "w")
         jsonFile.write(jsonString)
         jsonFile.close()
-        i+=1
+        # i+=1
 
-        all_features = tf.train.Features(feature=feature)
+        # all_features = tf.train.Features(feature=feature)
+        # seq_ex = tf.train.Example(features=all_features)
+        # return seq_ex
 
-
-        seq_ex = tf.train.Example(features=all_features)
-        return seq_ex
+        return None
 
     def generate_tables(self,driver,N_imgs,output_file_name):
         row_col_min=[self.row_min,self.col_min]                 #to randomly select number of rows
@@ -177,7 +176,7 @@ class GenerateTFRecord:
         exceptioncount=0
 
         rc_count=0                                              #for iterating through row and col array
-        # ic(self.tables_cat_dist)
+
         for assigned_category,cat_count in enumerate(self.tables_cat_dist):
             for _ in range(cat_count):
                 rows = int(round(rc_arr[rc_count][0]))
@@ -297,7 +296,7 @@ class GenerateTFRecord:
         assert opts.headless
         #driver=PhantomJS()
         driver = Firefox(options=opts)
-
+        i = 1
         while(True):
             starttime = time.time()
 
@@ -308,38 +307,60 @@ class GenerateTFRecord:
             data_arr,all_table_categories = self.generate_tables(driver, filesize, output_file_name)
             if(data_arr is not None):
                 if(len(data_arr)==filesize):
-                    with tf.io.TFRecordWriter(os.path.join(self.outtfpath,output_file_name),options=options) as writer:
-                        try:
-                            for imgindex,subarr in enumerate(data_arr):
-                                arr=subarr[0]
+                    try:
+                        for imgindex,subarr in enumerate(data_arr):
+                            arr=subarr[0]
 
-                                img=np.asarray(subarr[1][0],np.int64)[:,:,0]
-                                colmatrix = np.array(arr[1],dtype=np.int64)
-                                cellmatrix = np.array(arr[2],dtype=np.int64)
-                                rowmatrix = np.array(arr[0],dtype=np.int64)
-                                bboxes = np.array(arr[3])
-                                tablecategory=arr[4][0]
+                            img=np.asarray(subarr[1][0],np.int64)[:,:,0]
+                            colmatrix = np.array(arr[1],dtype=np.int64)
+                            cellmatrix = np.array(arr[2],dtype=np.int64)
+                            rowmatrix = np.array(arr[0],dtype=np.int64)
+                            bboxes = np.array(arr[3])
+                            tablecategory=arr[4][0]
+                            ic(colmatrix)
+                            ic(cellmatrix)
 
-                                # ic(imgindex)
-                                # ic(colmatrix)
-                                # ic(cellmatrix)
-                                # ic(rowmatrix)
-                                # ic(bboxes)
-                                # ic(tablecategory)
+                            i+=1
+                            seq_ex = self.generate_tf_record(img, i, cellmatrix, rowmatrix, colmatrix, bboxes,tablecategory,imgindex,output_file_name)
+                        
+                        print('\nThread :',threadnum,' Completed in ',time.time()-starttime,' ' ,output_file_name,'with len:',(len(data_arr)))
+                        print('category 1: ',all_table_categories[0],', category 2: ',all_table_categories[1],', category 3: ',all_table_categories[2],', category 4: ',all_table_categories[3])
+                    except Exception as e:
+                        print('Exception occurred in write_tf function for file: ',output_file_name)
+                        traceback.print_exc()
+                        self.logger.write(traceback.format_exc())
+                        # print('Thread :',threadnum,' Removing',output_file_name)
+                        # os.remove(os.path.join(self.outtfpath,output_file_name))
+                    break
 
-                                seq_ex = self.generate_tf_record(img, cellmatrix, rowmatrix, colmatrix, bboxes,tablecategory,imgindex,output_file_name)
-                                writer.write(seq_ex.SerializeToString())
+            # if(data_arr is not None):
+            #     if(len(data_arr)==filesize):
+            #         with tf.io.TFRecordWriter(os.path.join(self.outtfpath,output_file_name),options=options) as writer:
+            #             try:
+            #                 for imgindex,subarr in enumerate(data_arr):
+            #                     arr=subarr[0]
+
+            #                     img=np.asarray(subarr[1][0],np.int64)[:,:,0]
+            #                     colmatrix = np.array(arr[1],dtype=np.int64)
+            #                     cellmatrix = np.array(arr[2],dtype=np.int64)
+            #                     rowmatrix = np.array(arr[0],dtype=np.int64)
+            #                     bboxes = np.array(arr[3])
+            #                     tablecategory=arr[4][0]
+
+            #                     seq_ex = self.generate_tf_record(img, cellmatrix, rowmatrix, colmatrix, bboxes,tablecategory,imgindex,output_file_name)
+            #                     writer.write(seq_ex.SerializeToString())
                             
 
-                            print('\nThread :',threadnum,' Completed in ',time.time()-starttime,' ' ,output_file_name,'with len:',(len(data_arr)))
-                            print('category 1: ',all_table_categories[0],', category 2: ',all_table_categories[1],', category 3: ',all_table_categories[2],', category 4: ',all_table_categories[3])
-                        except Exception as e:
-                            print('Exception occurred in write_tf function for file: ',output_file_name)
-                            traceback.print_exc()
-                            self.logger.write(traceback.format_exc())
-                            # print('Thread :',threadnum,' Removing',output_file_name)
-                            # os.remove(os.path.join(self.outtfpath,output_file_name))
-                    break
+            #                 print('\nThread :',threadnum,' Completed in ',time.time()-starttime,' ' ,output_file_name,'with len:',(len(data_arr)))
+            #                 print('category 1: ',all_table_categories[0],', category 2: ',all_table_categories[1],', category 3: ',all_table_categories[2],', category 4: ',all_table_categories[3])
+            #             except Exception as e:
+            #                 print('Exception occurred in write_tf function for file: ',output_file_name)
+            #                 traceback.print_exc()
+            #                 self.logger.write(traceback.format_exc())
+            #                 # print('Thread :',threadnum,' Removing',output_file_name)
+            #                 # os.remove(os.path.join(self.outtfpath,output_file_name))
+            #         break
+
 
         driver.stop_client()
         driver.quit()
