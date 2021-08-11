@@ -134,8 +134,18 @@ class GenerateTFRecord:
         feature['adjacency_matrix_rows'] = tf.train.Feature(int64_list=tf.train.Int64List(value=rowmatrix.astype(np.int64).flatten()))
         feature['vertex_text'] = tf.train.Feature(int64_list=tf.train.Int64List(value=vertex_text.astype(np.int64).flatten()))
         
+        # json
+        featurejs = dict()
+        featurejs['image'] = im.astype(np.float32).flatten()
+        featurejs['global_features'] = np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten()
+        featurejs['vertex_features'] = vertex_features.astype(np.float32).flatten()
+        featurejs['adjacency_matrix_cells'] = cellmatrix.astype(np.int64).flatten()
+        featurejs['adjacency_matrix_cols'] = colmatrix.astype(np.int64).flatten()
+        featurejs['adjacency_matrix_rows'] = rowmatrix.astype(np.int64).flatten()
+        featurejs['vertex_text'] = vertex_text.astype(np.int64).flatten()
         
-        jsonString = json.dumps(feature)
+
+        jsonString = json.dumps(featurejs)
         output_file_name=output_file_name.replace('.tfrecord','.json')
 
         jsonFile = open(output_file_name, "w")
