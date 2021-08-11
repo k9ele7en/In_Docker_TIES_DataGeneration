@@ -147,11 +147,14 @@ class GenerateTFRecord:
         
         featurejs['global_features'] = np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten().tolist()
         featurejs['vertex_features_shp'] = vertex_features.shape
-        featurejs['vertex_features_shps'] = str(vertex_features.shape)
         featurejs['vertex_features'] = vertex_features.astype(np.float32).flatten().tolist()
+        featurejs['adjacency_matrix_cells_shp'] = cellmatrix.shape
         featurejs['adjacency_matrix_cells'] = cellmatrix.astype(np.int64).flatten().tolist()
+        featurejs['adjacency_matrix_cols_shp'] = colmatrix.shape
         featurejs['adjacency_matrix_cols'] = colmatrix.astype(np.int64).flatten().tolist()
+        featurejs['adjacency_matrix_rows_shp'] = rowmatrix.shape
         featurejs['adjacency_matrix_rows'] = rowmatrix.astype(np.int64).flatten().tolist()
+        featurejs['vertex_text_shp'] = vertex_text.shape
         featurejs['vertex_text'] = vertex_text.astype(np.int64).flatten().tolist()
         
         jsonString = json.dumps(featurejs)
