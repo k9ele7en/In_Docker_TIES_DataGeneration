@@ -254,6 +254,7 @@ class GenerateTFRecord:
                         #im = np.array(cv2.imread(img_path, 0),dtype=np.int64)
                         # im=im.astype(np.int64)
                         img_height, img_width=im.size
+                        ic(img_height, img_width)
 
                         words_arr = bboxes[:, 1].tolist()
                         ic('save1.1', words_arr)
