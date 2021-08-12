@@ -271,10 +271,12 @@ class GenerateTFRecord:
                         #vertex_text=np.chararray(shape=(self.num_of_max_vertices,self.max_length_of_word))
                         #vertex_text[:no_of_words,:]=list(map(self.str_to_chars, words_arr))
                         #vertex_text=words_arr+[""]*(self.num_of_max_vertices-len(words_arr))
-                        ic('save2')
 
                         vertex_text = np.zeros((self.num_of_max_vertices,self.max_length_of_word), dtype=np.int64)
+                        ic('save2',vertex_text)
                         vertex_text[:no_of_words]=np.array(list(map(self.str_to_int,words_arr)))
+                        ic('save2.1',self.num_of_max_vertices)
+                        ic('save2.2',self.max_length_of_word)
 
 
                         # feature = dict()
