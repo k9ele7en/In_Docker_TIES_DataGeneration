@@ -412,15 +412,15 @@ class GenerateTFRecord:
                         i = 1
                         for imgindex,subarr in enumerate(data_arr):
 
-                            arr=subarr[0]
+                            # arr=subarr[0]
 
-                            img=np.asarray(subarr[1][0],np.int64)[:,:,0]
-                            # ic(i)
-                            colmatrix = np.array(arr[1],dtype=np.int64)
-                            cellmatrix = np.array(arr[2],dtype=np.int64)
-                            rowmatrix = np.array(arr[0],dtype=np.int64)
-                            bboxes = np.array(arr[3])
-                            tablecategory=arr[4][0]
+                            # img=np.asarray(subarr[1][0],np.int64)[:,:,0]
+                            # # ic(i)
+                            # colmatrix = np.array(arr[1],dtype=np.int64)
+                            # cellmatrix = np.array(arr[2],dtype=np.int64)
+                            # rowmatrix = np.array(arr[0],dtype=np.int64)
+                            # bboxes = np.array(arr[3])
+                            # tablecategory=arr[4][0]
                             # ic(colmatrix)
                             # ic(cellmatrix)
 
