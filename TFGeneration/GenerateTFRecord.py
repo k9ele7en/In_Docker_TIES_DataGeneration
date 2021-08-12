@@ -406,37 +406,7 @@ class GenerateTFRecord:
             print('\nThread: ',threadnum,' Started:', output_file_name)
             #data_arr contains the images of generated tables and all_table_categories contains the table category of each of the table
             data_arr,all_table_categories = self.generate_tables(driver, filesize, output_file_name)
-            if(data_arr is not None):
-                if(len(data_arr)==filesize):
-                    try:
-                        i = 1
-                        for imgindex,subarr in enumerate(data_arr):
-
-                            # arr=subarr[0]
-
-                            # img=np.asarray(subarr[1][0],np.int64)[:,:,0]
-                            # # ic(i)
-                            # colmatrix = np.array(arr[1],dtype=np.int64)
-                            # cellmatrix = np.array(arr[2],dtype=np.int64)
-                            # rowmatrix = np.array(arr[0],dtype=np.int64)
-                            # bboxes = np.array(arr[3])
-                            # tablecategory=arr[4][0]
-                            # ic(colmatrix)
-                            # ic(cellmatrix)
-
-                            # seq_ex = self.generate_tf_record(i, img, cellmatrix, rowmatrix, colmatrix, bboxes,tablecategory,imgindex,output_file_name)
-                            i+=1
-                        
-                        print('\nThread :',threadnum,' Completed in ',time.time()-starttime,' ' ,output_file_name,'with len:',(len(data_arr)))
-                        print('category 1: ',all_table_categories[0],', category 2: ',all_table_categories[1],', category 3: ',all_table_categories[2],', category 4: ',all_table_categories[3])
-                    except Exception as e:
-                        print('Exception occurred in write_tf function for file: ',output_file_name)
-                        traceback.print_exc()
-                        self.logger.write(traceback.format_exc())
-                        # print('Thread :',threadnum,' Removing',output_file_name)
-                        # os.remove(os.path.join(self.outtfpath,output_file_name))
-                    break
-
+            
             # if(data_arr is not None):
             #     if(len(data_arr)==filesize):
             #         with tf.io.TFRecordWriter(os.path.join(self.outtfpath,output_file_name),options=options) as writer:
