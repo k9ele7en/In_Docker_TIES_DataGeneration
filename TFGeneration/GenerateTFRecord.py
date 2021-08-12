@@ -254,7 +254,7 @@ class GenerateTFRecord:
                         img_height, img_width=im.size
                         ic(bboxes)
                         ic(type(bboxes))
-                        words_arr = bboxes[:, 1].tolist()
+                        words_arr = bboxes[:, 1]#.tolist()
                         ic('save1.1', words_arr)
 
                         no_of_words = len(words_arr)
