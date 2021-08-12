@@ -204,10 +204,11 @@ class GenerateTFRecord:
                 
                 # json
                 featurejs = dict()
-                cv2.imwrite('visualizeimgs/images/cat'+str(tablecategory)+'_'+str(rc_count)+'.jpg',im)
+                filename = 'cat'+str(tablecategory)+'_'+str(rc_count)
+                cv2.imwrite('visualizeimgs/images/'+filename+'.jpg',im)
 
                 # featurejs['image'] = im.astype(np.float32).flatten().tolist()
-                featurejs['img_i'] = 'cat'+str(tablecategory)+'_'+str(rc_count)
+                featurejs['img_i'] = filename
                 featurejs['bboxes'] = arr.tolist()
                 
                 featurejs['global_features'] = np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten().tolist()
@@ -222,7 +223,7 @@ class GenerateTFRecord:
                 featurejs['vertex_text_shp'] = vertex_text.shape
                 featurejs['vertex_text'] = vertex_text.astype(np.int64).flatten().tolist()
                 
-                a_file = open('visualizeimgs/cat'+str(tablecategory)+'_'+str(rc_count)+"_matrix.txt", "w")
+                a_file = open('visualizeimgs/'+filename+"_matrix.txt", "w")
                 for row in cellmatrix:
                     np.savetxt(a_file, row)
                 a_file.close()
@@ -230,7 +231,7 @@ class GenerateTFRecord:
                 jsonString = json.dumps(featurejs)
                 output_file_name=output_file_name.replace('.tfrecord','.json')
 
-                jsonFile = open('visualizeimgs/jsons/cat'+str(tablecategory)+'_'+str(rc_count)+'.json', "w")
+                jsonFile = open('visualizeimgs/jsons/'+filename+'.json', "w")
                 jsonFile.write(jsonString)
                 jsonFile.close()
                 ###############
@@ -238,6 +239,7 @@ class GenerateTFRecord:
                 ##############
                 
                 rc_count+=1
+                all_table_categories[tablecategory-1]+=1
         
         return data_arr,all_table_categories
 
