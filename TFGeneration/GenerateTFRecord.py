@@ -292,6 +292,9 @@ class GenerateTFRecord:
                         # im=im.astype(np.int64)
                         # img=img.astype(np.uint8)
                         # cv2.imwrite('visualizeimgs/cat'+str(tablecategory)+'_'+str(rc_count)+'.jpg',im)
+                        ic(tablecategory)
+                        ic(rc_count)
+                        ic(type(im))
                         im.save('visualizeimgs/cat'+str(tablecategory)+'_'+str(rc_count)+'.jpg')
                         ic('save3')
 
