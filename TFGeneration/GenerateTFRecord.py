@@ -249,7 +249,8 @@ class GenerateTFRecord:
                         colmatrix = self.pad_with_zeros(same_col_matrix, (self.num_of_max_vertices, self.num_of_max_vertices))
                         rowmatrix = self.pad_with_zeros(same_row_matrix, (self.num_of_max_vertices, self.num_of_max_vertices))
                         ic('save')
-
+                        ic(im)
+                        ic(im.shape)
                         #im = np.array(cv2.imread(img_path, 0),dtype=np.int64)
                         # im=im.astype(np.int64)
                         img_height, img_width=im.shape
