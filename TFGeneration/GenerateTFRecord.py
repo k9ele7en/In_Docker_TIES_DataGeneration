@@ -258,13 +258,22 @@ class GenerateTFRecord:
 
 
     def write_tf(self,filesize,threadnum):
+        '''This function writes tfrecords. Input parameters are: filesize (number of images in one tfrecord), threadnum(thread id)'''
+        options = tf.compat.v1.io.TFRecordOptions(tf.compat.v1.io.TFRecordCompressionType.GZIP)
         opts = Options()
         opts.set_headless()
         assert opts.headless
         #driver=PhantomJS()
         driver = Firefox(options=opts)
-        while(True):
-            print('\nThread: ',threadnum,' Started:',)
+        # while(True):
+            # starttime = time.time()
+
+            #randomly select a name of length=20 for tfrecords file.
+        output_file_name = ''.join(random.choices(string.ascii_uppercase + string.digits, k=20)) + '.tfrecord'
+        print('\nThread: ',threadnum,' Started:', output_file_name)
+        #data_arr contains the images of generated tables and all_table_categories contains the table category of each of the table
+        data_arr,all_table_categories = self.generate_tables(driver, filesize, output_file_name)
+
         driver.stop_client()
         driver.quit()
 
