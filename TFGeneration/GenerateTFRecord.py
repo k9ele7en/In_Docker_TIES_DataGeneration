@@ -245,6 +245,7 @@ class GenerateTFRecord:
 
                         #######################
                         # img=np.asarray(subarr[1][0],np.int64)[:,:,0]
+                        img=np.asarray(im,np.int64)[:,:,0]
 
                         colmatrix = np.array(same_col_matrix,dtype=np.int64)
                         cellmatrix = np.array(same_cell_matrix,dtype=np.int64)
@@ -255,8 +256,8 @@ class GenerateTFRecord:
                         colmatrix = self.pad_with_zeros(same_col_matrix, (self.num_of_max_vertices, self.num_of_max_vertices))
                         rowmatrix = self.pad_with_zeros(same_row_matrix, (self.num_of_max_vertices, self.num_of_max_vertices))
 
-                        # im=im.astype(np.int64)
-                        img_height, img_width=im.size
+                        im=im.astype(np.int64)
+                        img_height, img_width=im.shape
                         words_arr = arr[:, 1].tolist()
 
                         no_of_words = len(words_arr)
@@ -295,7 +296,9 @@ class GenerateTFRecord:
                         ic(tablecategory)
                         ic(rc_count)
                         ic(type(im))
-                        im.save('visualizeimgs/cat'+str(tablecategory)+'_'+str(rc_count)+'.jpg')
+                        # im.save('visualizeimgs/cat'+str(tablecategory)+'_'+str(rc_count)+'.jpg')
+                        cv2.imwrite('visualizeimgs/cat'+str(tablecategory)+'_'+str(rc_count)+'.jpg',im)
+
                         ic('save3')
 
                         # featurejs['image'] = im.astype(np.float32).flatten().tolist()
