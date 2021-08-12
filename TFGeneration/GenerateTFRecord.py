@@ -264,7 +264,7 @@ class GenerateTFRecord:
         #driver=PhantomJS()
         driver = Firefox(options=opts)
         while(True):
-            print('\nThread: ',threadnum,' Started:', output_file_name)
+            print('\nThread: ',threadnum,' Started:',)
         driver.stop_client()
         driver.quit()
 
