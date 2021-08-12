@@ -306,7 +306,6 @@ class GenerateTFRecord:
         assert opts.headless
         #driver=PhantomJS()
         driver = Firefox(options=opts)
-        i = 1
         while(True):
             starttime = time.time()
 
@@ -318,18 +317,20 @@ class GenerateTFRecord:
             if(data_arr is not None):
                 if(len(data_arr)==filesize):
                     try:
+                        i = 1
                         for imgindex,subarr in enumerate(data_arr):
+
                             arr=subarr[0]
 
                             img=np.asarray(subarr[1][0],np.int64)[:,:,0]
-                            ic(i)
+                            # ic(i)
                             colmatrix = np.array(arr[1],dtype=np.int64)
                             cellmatrix = np.array(arr[2],dtype=np.int64)
                             rowmatrix = np.array(arr[0],dtype=np.int64)
                             bboxes = np.array(arr[3])
                             tablecategory=arr[4][0]
-                            ic(colmatrix)
-                            ic(cellmatrix)
+                            # ic(colmatrix)
+                            # ic(cellmatrix)
 
                             seq_ex = self.generate_tf_record(i, img, cellmatrix, rowmatrix, colmatrix, bboxes,tablecategory,imgindex,output_file_name)
                             i+=1
