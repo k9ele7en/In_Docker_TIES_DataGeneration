@@ -249,21 +249,17 @@ class GenerateTFRecord:
                         colmatrix = np.array(same_col_matrix,dtype=np.int64)
                         cellmatrix = np.array(same_cell_matrix,dtype=np.int64)
                         rowmatrix = np.array(same_row_matrix,dtype=np.int64)
-                        bboxes = np.array(bboxes)
+                        arr = np.array(arr)
                         # save json and img
                         cellmatrix=self.pad_with_zeros(same_cell_matrix,(self.num_of_max_vertices,self.num_of_max_vertices))
                         colmatrix = self.pad_with_zeros(same_col_matrix, (self.num_of_max_vertices, self.num_of_max_vertices))
                         rowmatrix = self.pad_with_zeros(same_row_matrix, (self.num_of_max_vertices, self.num_of_max_vertices))
 
-                        #im = np.array(cv2.imread(img_path, 0),dtype=np.int64)
                         # im=im.astype(np.int64)
                         img_height, img_width=im.size
-                        ic(type(bboxes))
-                        words_arr = bboxes[:, 1].tolist()
-                        ic('save1.1', words_arr)
+                        words_arr = arr[:, 1].tolist()
 
                         no_of_words = len(words_arr)
-                        ic('save1.2')
 
 
                         lengths_arr = self.convert_to_int(arr[:, 0])
@@ -299,7 +295,7 @@ class GenerateTFRecord:
 
                         # featurejs['image'] = im.astype(np.float32).flatten().tolist()
                         featurejs['img_i'] = 'cat'+str(tablecategory)+'_'+str(rc_count)
-                        featurejs['bboxes'] = bboxes.tolist()
+                        featurejs['bboxes'] = arr.tolist()
                         
                         featurejs['global_features'] = np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten().tolist()
                         featurejs['vertex_features_shp'] = vertex_features.shape
