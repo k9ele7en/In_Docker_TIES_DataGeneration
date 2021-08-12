@@ -244,4 +244,4 @@ class GenerateTFRecord:
 
         for proc in threads:
             proc.join()
-        print("Synth table completed, check at: ", self.outtfpath, ". time length: " time.time()-starttime)
+        print("Synth table completed, check at: ", self.outtfpath, ". time length: ", time.time()-starttime)
