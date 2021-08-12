@@ -272,11 +272,11 @@ class GenerateTFRecord:
                 return
             
         #create all directories here
-        if(self.visualizeimgs):
-            self.create_dir('visualizeimgs')
-            dirname='visualizeimgs'
-            self.create_dir(os.path.join(dirname,'images'))
-            self.create_dir(os.path.join(dirname, 'jsons'))
+        # if(self.visualizeimgs):
+        self.create_dir('visualizeimgs')
+        dirname='visualizeimgs'
+        self.create_dir(os.path.join(dirname,'images'))
+        self.create_dir(os.path.join(dirname, 'jsons'))
 
         self.create_dir(self.outtfpath)                 #create output directory if it does not exist
 
