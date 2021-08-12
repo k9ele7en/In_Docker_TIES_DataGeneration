@@ -93,6 +93,37 @@ class GenerateTFRecord:
         dummy[:arr.shape[0],:arr.shape[1]]=arr
         return dummy
 
+    def draw_matrices(self,img,arr,matrices,imgindex,output_file_name):
+        '''Call this fucntion to draw visualizations of a matrix on image'''
+        no_of_words=len(arr)
+        colors = np.random.randint(0, 255, (no_of_words, 3))
+        arr = arr[:, 2:]
+
+        img=img.astype(np.uint8)
+        img=np.dstack((img,img,img))
+
+        mat_names=['row','col','cell']
+        output_file_name=output_file_name.replace('.tfrecord','')
+
+        for matname,matrix in zip(mat_names,matrices):
+            im=img.copy()
+            x=1
+            indices = np.argwhere(matrix[x] == 1)
+            for index in indices:
+                cv2.rectangle(im, (int(arr[index, 0])-3, int(arr[index, 1])-3),
+                              (int(arr[index, 2])+3, int(arr[index, 3])+3),
+                              (0,255,0), 1)
+
+            x = 4
+            indices = np.argwhere(matrix[x] == 1)
+            for index in indices:
+                cv2.rectangle(im, (int(arr[index, 0])-3, int(arr[index, 1])-3),
+                              (int(arr[index, 2])+3, int(arr[index, 3])+3),
+                              (0, 0, 255), 1)
+
+            img_name=os.path.join('bboxes/',output_file_name+'_'+str(imgindex)+'_'+matname+'.jpg')
+            cv2.imwrite(img_name,im)
+
     def generate_tables(self,driver,N_imgs,output_file_name):
         row_col_min=[self.row_min,self.col_min]                 #to randomly select number of rows
         row_col_max=[self.row_max,self.col_max]                 #to randomly select number of columns
@@ -124,7 +155,6 @@ class GenerateTFRecord:
                 if(assigned_category+1==4):
                     #randomly select shear and rotation levels
                     while(True):
-                        ic('cat=4')
                         shearval = np.random.uniform(self.minshearval, self.maxshearval)
                         rotval = np.random.uniform(self.minrotval, self.maxrotval)
                         if(shearval!=0.0 or rotval!=0.0):
@@ -136,14 +166,6 @@ class GenerateTFRecord:
                     # im, bboxes = Transform(im, bboxes, shearval, rotval, self.max_width, self.max_height)
                     # ic('pass transform')
                     tablecategory=4
-                        
-
-                if(self.visualizeimgs):
-                    #if the image and equivalent html is need to be stored
-                    dirname=os.path.join('visualizeimgs/','category'+str(tablecategory))
-                    f=open(os.path.join(dirname,'html',str(rc_count)+output_file_name.replace('.tfrecord','.html')),'w')
-                    f.write(html_content)
-                    f.close()
 
                 #######################
                 im=np.asarray(im,np.int64)[:,:,0]
@@ -182,7 +204,7 @@ class GenerateTFRecord:
                 
                 # json
                 featurejs = dict()
-                cv2.imwrite('visualizeimgs/cat'+str(tablecategory)+'_'+str(rc_count)+'.jpg',im)
+                cv2.imwrite('visualizeimgs/images/cat'+str(tablecategory)+'_'+str(rc_count)+'.jpg',im)
 
                 # featurejs['image'] = im.astype(np.float32).flatten().tolist()
                 featurejs['img_i'] = 'cat'+str(tablecategory)+'_'+str(rc_count)
@@ -208,7 +230,7 @@ class GenerateTFRecord:
                 jsonString = json.dumps(featurejs)
                 output_file_name=output_file_name.replace('.tfrecord','.json')
 
-                jsonFile = open('visualizeimgs/cat'+str(tablecategory)+'_'+str(rc_count)+'.json', "w")
+                jsonFile = open('visualizeimgs/jsons/cat'+str(tablecategory)+'_'+str(rc_count)+'.json', "w")
                 jsonFile.write(jsonString)
                 jsonFile.close()
                 ###############
@@ -216,46 +238,8 @@ class GenerateTFRecord:
                 ##############
                 
                 rc_count+=1
-        if(len(data_arr)!=N_imgs):
-            #If total number of images are not generated, then return None.
-            print('Images not equal to the required size.')
-            return None
-        ic('gentb5')
         
         return data_arr,all_table_categories
-
-    def draw_matrices(self,img,arr,matrices,imgindex,output_file_name):
-        '''Call this fucntion to draw visualizations of a matrix on image'''
-        no_of_words=len(arr)
-        colors = np.random.randint(0, 255, (no_of_words, 3))
-        arr = arr[:, 2:]
-
-        img=img.astype(np.uint8)
-        img=np.dstack((img,img,img))
-
-        mat_names=['row','col','cell']
-        output_file_name=output_file_name.replace('.tfrecord','')
-
-        for matname,matrix in zip(mat_names,matrices):
-            im=img.copy()
-            x=1
-            indices = np.argwhere(matrix[x] == 1)
-            for index in indices:
-                cv2.rectangle(im, (int(arr[index, 0])-3, int(arr[index, 1])-3),
-                              (int(arr[index, 2])+3, int(arr[index, 3])+3),
-                              (0,255,0), 1)
-
-            x = 4
-            indices = np.argwhere(matrix[x] == 1)
-            for index in indices:
-                cv2.rectangle(im, (int(arr[index, 0])-3, int(arr[index, 1])-3),
-                              (int(arr[index, 2])+3, int(arr[index, 3])+3),
-                              (0, 0, 255), 1)
-
-            img_name=os.path.join('bboxes/',output_file_name+'_'+str(imgindex)+'_'+matname+'.jpg')
-            cv2.imwrite(img_name,im)
-
-
 
     def write_tf(self,filesize,threadnum):
         '''This function writes tfrecords. Input parameters are: filesize (number of images in one tfrecord), threadnum(thread id)'''
@@ -273,7 +257,7 @@ class GenerateTFRecord:
         print('\nThread: ',threadnum,' Started:', output_file_name)
         #data_arr contains the images of generated tables and all_table_categories contains the table category of each of the table
         data_arr,all_table_categories = self.generate_tables(driver, filesize, output_file_name)
-
+        ic(all_table_categories)
         driver.stop_client()
         driver.quit()
 
@@ -290,16 +274,9 @@ class GenerateTFRecord:
         #create all directories here
         if(self.visualizeimgs):
             self.create_dir('visualizeimgs')
-            for tablecategory in range(1,5):
-                dirname=os.path.join('visualizeimgs/','category'+str(tablecategory))
-                self.create_dir(dirname)
-                self.create_dir(os.path.join(dirname,'html'))
-                self.create_dir(os.path.join(dirname, 'img'))
-
-
-
-        if(self.visualizebboxes):
-            self.create_dir('bboxes')
+            dirname='visualizeimgs'
+            self.create_dir(os.path.join(dirname,'images'))
+            self.create_dir(os.path.join(dirname, 'jsons'))
 
         self.create_dir(self.outtfpath)                 #create output directory if it does not exist
 
