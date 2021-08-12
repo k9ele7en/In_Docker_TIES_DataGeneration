@@ -245,8 +245,8 @@ class GenerateTFRecord:
 
                         #######################
                         # img=np.asarray(subarr[1][0],np.int64)[:,:,0]
-                        img=np.asarray(im,np.int64)[:,:,0]
-                    
+                        # img=np.asarray(im,np.int64)[:,:,0]
+                        ic(img.shape)
                         colmatrix = np.array(same_col_matrix,dtype=np.int64)
                         cellmatrix = np.array(same_cell_matrix,dtype=np.int64)
                         rowmatrix = np.array(same_row_matrix,dtype=np.int64)
