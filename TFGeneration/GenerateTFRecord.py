@@ -249,7 +249,7 @@ class GenerateTFRecord:
                         colmatrix = np.array(same_col_matrix,dtype=np.int64)
                         cellmatrix = np.array(same_cell_matrix,dtype=np.int64)
                         rowmatrix = np.array(same_row_matrix,dtype=np.int64)
-                        arr = np.array(arr)
+                        arr = np.array(bboxes)
                         # save json and img
                         cellmatrix=self.pad_with_zeros(same_cell_matrix,(self.num_of_max_vertices,self.num_of_max_vertices))
                         colmatrix = self.pad_with_zeros(same_col_matrix, (self.num_of_max_vertices, self.num_of_max_vertices))
