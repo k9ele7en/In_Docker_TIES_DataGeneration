@@ -136,38 +136,38 @@ class GenerateTFRecord:
         
         # json
         # i=1
-        featurejs = dict()
-        im=im.astype(np.int64)
-        # img=img.astype(np.uint8)
-        cv2.imwrite('visualizeimgs/cat'+str(tablecategory)+'_'+str(i)+'.jpg',im)
+        # featurejs = dict()
+        # im=im.astype(np.int64)
+        # # img=img.astype(np.uint8)
+        # cv2.imwrite('visualizeimgs/cat'+str(tablecategory)+'_'+str(i)+'.jpg',im)
 
-        # featurejs['image'] = im.astype(np.float32).flatten().tolist()
-        featurejs['img_i'] = 'cat'+str(tablecategory)+'_'+str(i)
-        featurejs['bboxes'] = arr.tolist()
+        # # featurejs['image'] = im.astype(np.float32).flatten().tolist()
+        # featurejs['img_i'] = 'cat'+str(tablecategory)+'_'+str(i)
+        # featurejs['bboxes'] = arr.tolist()
         
-        featurejs['global_features'] = np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten().tolist()
-        featurejs['vertex_features_shp'] = vertex_features.shape
-        featurejs['vertex_features'] = vertex_features.astype(np.float32).flatten().tolist()
-        featurejs['adjacency_matrix_cells_shp'] = cellmatrix.shape
-        featurejs['adjacency_matrix_cells'] = cellmatrix.astype(np.int64).flatten().tolist()
-        featurejs['adjacency_matrix_cols_shp'] = colmatrix.shape
-        featurejs['adjacency_matrix_cols'] = colmatrix.astype(np.int64).flatten().tolist()
-        featurejs['adjacency_matrix_rows_shp'] = rowmatrix.shape
-        featurejs['adjacency_matrix_rows'] = rowmatrix.astype(np.int64).flatten().tolist()
-        featurejs['vertex_text_shp'] = vertex_text.shape
-        featurejs['vertex_text'] = vertex_text.astype(np.int64).flatten().tolist()
+        # featurejs['global_features'] = np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten().tolist()
+        # featurejs['vertex_features_shp'] = vertex_features.shape
+        # featurejs['vertex_features'] = vertex_features.astype(np.float32).flatten().tolist()
+        # featurejs['adjacency_matrix_cells_shp'] = cellmatrix.shape
+        # featurejs['adjacency_matrix_cells'] = cellmatrix.astype(np.int64).flatten().tolist()
+        # featurejs['adjacency_matrix_cols_shp'] = colmatrix.shape
+        # featurejs['adjacency_matrix_cols'] = colmatrix.astype(np.int64).flatten().tolist()
+        # featurejs['adjacency_matrix_rows_shp'] = rowmatrix.shape
+        # featurejs['adjacency_matrix_rows'] = rowmatrix.astype(np.int64).flatten().tolist()
+        # featurejs['vertex_text_shp'] = vertex_text.shape
+        # featurejs['vertex_text'] = vertex_text.astype(np.int64).flatten().tolist()
         
-        a_file = open('visualizeimgs/cat'+str(tablecategory)+'_'+str(i)+"_matrix.txt", "w")
-        for row in cellmatrix:
-            np.savetxt(a_file, row)
-        a_file.close()
+        # a_file = open('visualizeimgs/cat'+str(tablecategory)+'_'+str(i)+"_matrix.txt", "w")
+        # for row in cellmatrix:
+        #     np.savetxt(a_file, row)
+        # a_file.close()
 
-        jsonString = json.dumps(featurejs)
-        output_file_name=output_file_name.replace('.tfrecord','.json')
+        # jsonString = json.dumps(featurejs)
+        # output_file_name=output_file_name.replace('.tfrecord','.json')
 
-        jsonFile = open('visualizeimgs/cat'+str(tablecategory)+'_'+str(i)+'.json', "w")
-        jsonFile.write(jsonString)
-        jsonFile.close()
+        # jsonFile = open('visualizeimgs/cat'+str(tablecategory)+'_'+str(i)+'.json', "w")
+        # jsonFile.write(jsonString)
+        # jsonFile.close()
         # i+=1
 
         # all_features = tf.train.Features(feature=feature)
@@ -236,11 +236,84 @@ class GenerateTFRecord:
                             f=open(os.path.join(dirname,'html',str(rc_count)+output_file_name.replace('.tfrecord','.html')),'w')
                             f.write(html_content)
                             f.close()
-                            im.save(os.path.join(dirname,'img',str(rc_count)+output_file_name.replace('.tfrecord','.png')), dpi=(600, 600))
-                            imgname = os.path.join(dirname,'img',str(rc_count)+output_file_name.replace('.tfrecord','.png'))
+                            # im.save(os.path.join(dirname,'img',str(rc_count)+output_file_name.replace('.tfrecord','.png')), dpi=(600, 600))
+                            # imgname = os.path.join(dirname,'img',str(rc_count)+output_file_name.replace('.tfrecord','.png'))
 
                         # driver.quit()
                         # 0/0
+
+                        #######################
+                        # save json and img
+                        cellmatrix=self.pad_with_zeros(same_cell_matrix,(self.num_of_max_vertices,self.num_of_max_vertices))
+                        colmatrix = self.pad_with_zeros(same_col_matrix, (self.num_of_max_vertices, self.num_of_max_vertices))
+                        rowmatrix = self.pad_with_zeros(same_row_matrix, (self.num_of_max_vertices, self.num_of_max_vertices))
+
+                        #im = np.array(cv2.imread(img_path, 0),dtype=np.int64)
+                        im=im.astype(np.int64)
+                        img_height, img_width=im.shape
+
+                        words_arr = bboxes[:, 1].tolist()
+                        no_of_words = len(words_arr)
+
+
+                        lengths_arr = self.convert_to_int(arr[:, 0])
+                        vertex_features=np.zeros(shape=(self.num_of_max_vertices,self.num_data_dims),dtype=np.int64)
+                        lengths_arr=np.array(lengths_arr).reshape(len(lengths_arr),-1)
+                        sample_out=np.array(np.concatenate((arr[:,2:],lengths_arr),axis=1))
+                        vertex_features[:no_of_words,:]=sample_out
+
+                        #vertex_text=np.chararray(shape=(self.num_of_max_vertices,self.max_length_of_word))
+                        #vertex_text[:no_of_words,:]=list(map(self.str_to_chars, words_arr))
+                        #vertex_text=words_arr+[""]*(self.num_of_max_vertices-len(words_arr))
+
+                        vertex_text = np.zeros((self.num_of_max_vertices,self.max_length_of_word), dtype=np.int64)
+                        vertex_text[:no_of_words]=np.array(list(map(self.str_to_int,words_arr)))
+
+
+                        # feature = dict()
+                        # feature['image'] = tf.train.Feature(float_list=tf.train.FloatList(value=im.astype(np.float32).flatten()))
+                        # feature['global_features'] = tf.train.Feature(float_list=tf.train.FloatList(value=np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten()))
+                        # feature['vertex_features'] = tf.train.Feature(float_list=tf.train.FloatList(value=vertex_features.astype(np.float32).flatten()))
+                        # feature['adjacency_matrix_cells'] = tf.train.Feature(int64_list=tf.train.Int64List(value=cellmatrix.astype(np.int64).flatten()))
+                        # feature['adjacency_matrix_cols'] = tf.train.Feature(int64_list=tf.train.Int64List(value=colmatrix.astype(np.int64).flatten()))
+                        # feature['adjacency_matrix_rows'] = tf.train.Feature(int64_list=tf.train.Int64List(value=rowmatrix.astype(np.int64).flatten()))
+                        # feature['vertex_text'] = tf.train.Feature(int64_list=tf.train.Int64List(value=vertex_text.astype(np.int64).flatten()))
+                        
+                        # json
+                        featurejs = dict()
+                        im=im.astype(np.int64)
+                        # img=img.astype(np.uint8)
+                        cv2.imwrite('visualizeimgs/cat'+str(tablecategory)+'_'+str(rc_count)+'.jpg',im)
+
+                        # featurejs['image'] = im.astype(np.float32).flatten().tolist()
+                        featurejs['img_i'] = 'cat'+str(tablecategory)+'_'+str(rc_count)
+                        featurejs['bboxes'] = arr.tolist()
+                        
+                        featurejs['global_features'] = np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten().tolist()
+                        featurejs['vertex_features_shp'] = vertex_features.shape
+                        featurejs['vertex_features'] = vertex_features.astype(np.float32).flatten().tolist()
+                        featurejs['adjacency_matrix_cells_shp'] = cellmatrix.shape
+                        featurejs['adjacency_matrix_cells'] = cellmatrix.astype(np.int64).flatten().tolist()
+                        featurejs['adjacency_matrix_cols_shp'] = colmatrix.shape
+                        featurejs['adjacency_matrix_cols'] = colmatrix.astype(np.int64).flatten().tolist()
+                        featurejs['adjacency_matrix_rows_shp'] = rowmatrix.shape
+                        featurejs['adjacency_matrix_rows'] = rowmatrix.astype(np.int64).flatten().tolist()
+                        featurejs['vertex_text_shp'] = vertex_text.shape
+                        featurejs['vertex_text'] = vertex_text.astype(np.int64).flatten().tolist()
+                        
+                        a_file = open('visualizeimgs/cat'+str(tablecategory)+'_'+str(rc_count)+"_matrix.txt", "w")
+                        for row in cellmatrix:
+                            np.savetxt(a_file, row)
+                        a_file.close()
+
+                        jsonString = json.dumps(featurejs)
+                        output_file_name=output_file_name.replace('.tfrecord','.json')
+
+                        jsonFile = open('visualizeimgs/cat'+str(tablecategory)+'_'+str(rc_count)+'.json', "w")
+                        jsonFile.write(jsonString)
+                        jsonFile.close()
+                        ###############
+
                         data_arr.append([[same_row_matrix, same_col_matrix, same_cell_matrix, bboxes,[tablecategory]],[im]])
                         all_table_categories[tablecategory-1]+=1
                         ic(all_table_categories)
