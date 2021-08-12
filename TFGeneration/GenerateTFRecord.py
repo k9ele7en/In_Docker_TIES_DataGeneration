@@ -36,7 +36,7 @@ class Logger:
         file.close()
 
 class GenerateTFRecord:
-    def __init__(self, outpath,filesize,unlvimagespath,unlvocrpath,unlvtablepath,visualizeimgs,visualizebboxes,distributionfilepath):
+    def __init__(self, outpath,filesize,unlvimagespath,unlvocrpath,unlvtablepath,distributionfilepath):
         self.outtfpath = outpath                        #directory to store tfrecords
         self.filesize=filesize                          #number of images in each tfrecord
         self.unlvocrpath=unlvocrpath                    #unlv ocr ground truth files
