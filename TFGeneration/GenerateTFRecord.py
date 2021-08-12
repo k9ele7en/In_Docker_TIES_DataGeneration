@@ -251,7 +251,7 @@ class GenerateTFRecord:
                         ic('save')
 
                         #im = np.array(cv2.imread(img_path, 0),dtype=np.int64)
-                        im=im.astype(np.int64)
+                        # im=im.astype(np.int64)
                         img_height, img_width=im.shape
 
                         words_arr = bboxes[:, 1].tolist()
@@ -285,7 +285,7 @@ class GenerateTFRecord:
                         
                         # json
                         featurejs = dict()
-                        im=im.astype(np.int64)
+                        # im=im.astype(np.int64)
                         # img=img.astype(np.uint8)
                         cv2.imwrite('visualizeimgs/cat'+str(tablecategory)+'_'+str(rc_count)+'.jpg',im)
                         ic('save3')
