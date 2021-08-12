@@ -241,12 +241,14 @@ class GenerateTFRecord:
 
                         # driver.quit()
                         # 0/0
+                        ic('gonna save')
 
                         #######################
                         # save json and img
                         cellmatrix=self.pad_with_zeros(same_cell_matrix,(self.num_of_max_vertices,self.num_of_max_vertices))
                         colmatrix = self.pad_with_zeros(same_col_matrix, (self.num_of_max_vertices, self.num_of_max_vertices))
                         rowmatrix = self.pad_with_zeros(same_row_matrix, (self.num_of_max_vertices, self.num_of_max_vertices))
+                        ic('save')
 
                         #im = np.array(cv2.imread(img_path, 0),dtype=np.int64)
                         im=im.astype(np.int64)
@@ -254,6 +256,7 @@ class GenerateTFRecord:
 
                         words_arr = bboxes[:, 1].tolist()
                         no_of_words = len(words_arr)
+                        ic('save1')
 
 
                         lengths_arr = self.convert_to_int(arr[:, 0])
@@ -265,6 +268,7 @@ class GenerateTFRecord:
                         #vertex_text=np.chararray(shape=(self.num_of_max_vertices,self.max_length_of_word))
                         #vertex_text[:no_of_words,:]=list(map(self.str_to_chars, words_arr))
                         #vertex_text=words_arr+[""]*(self.num_of_max_vertices-len(words_arr))
+                        ic('save2')
 
                         vertex_text = np.zeros((self.num_of_max_vertices,self.max_length_of_word), dtype=np.int64)
                         vertex_text[:no_of_words]=np.array(list(map(self.str_to_int,words_arr)))
@@ -284,6 +288,7 @@ class GenerateTFRecord:
                         im=im.astype(np.int64)
                         # img=img.astype(np.uint8)
                         cv2.imwrite('visualizeimgs/cat'+str(tablecategory)+'_'+str(rc_count)+'.jpg',im)
+                        ic('save3')
 
                         # featurejs['image'] = im.astype(np.float32).flatten().tolist()
                         featurejs['img_i'] = 'cat'+str(tablecategory)+'_'+str(rc_count)
@@ -313,6 +318,7 @@ class GenerateTFRecord:
                         jsonFile.write(jsonString)
                         jsonFile.close()
                         ###############
+                        ic('save4')
 
                         data_arr.append([[same_row_matrix, same_col_matrix, same_cell_matrix, bboxes,[tablecategory]],[im]])
                         all_table_categories[tablecategory-1]+=1
@@ -405,7 +411,7 @@ class GenerateTFRecord:
                             # ic(colmatrix)
                             # ic(cellmatrix)
 
-                            seq_ex = self.generate_tf_record(i, img, cellmatrix, rowmatrix, colmatrix, bboxes,tablecategory,imgindex,output_file_name)
+                            # seq_ex = self.generate_tf_record(i, img, cellmatrix, rowmatrix, colmatrix, bboxes,tablecategory,imgindex,output_file_name)
                             i+=1
                         
                         print('\nThread :',threadnum,' Completed in ',time.time()-starttime,' ' ,output_file_name,'with len:',(len(data_arr)))
