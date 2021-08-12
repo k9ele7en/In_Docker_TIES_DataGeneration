@@ -42,7 +42,6 @@ class GenerateTFRecord:
         self.unlvocrpath=unlvocrpath                    #unlv ocr ground truth files
         self.unlvimagespath=unlvimagespath              #unlv images
         self.unlvtablepath=unlvtablepath                #unlv ground truth of tabls
-        self.visualizeimgs=visualizeimgs                #wheter to store images separately or not
         self.distributionfile=distributionfilepath      #pickle file containing UNLV distribution
         self.logger=Logger()                            #if we want to use logger and store output to file
         #self.logdir = 'logdir/'
@@ -62,7 +61,6 @@ class GenerateTFRecord:
         self.max_height=768                             #max image height
         self.max_width=1366                             #max image width
         self.tables_cat_dist = self.get_category_distribution(self.filesize)
-        self.visualizebboxes=visualizebboxes
 
     def get_category_distribution(self,filesize):
         tables_cat_dist=[0,0,0,0]
@@ -93,38 +91,7 @@ class GenerateTFRecord:
         dummy[:arr.shape[0],:arr.shape[1]]=arr
         return dummy
 
-    def draw_matrices(self,img,arr,matrices,imgindex,output_file_name):
-        '''Call this fucntion to draw visualizations of a matrix on image'''
-        no_of_words=len(arr)
-        colors = np.random.randint(0, 255, (no_of_words, 3))
-        arr = arr[:, 2:]
-
-        img=img.astype(np.uint8)
-        img=np.dstack((img,img,img))
-
-        mat_names=['row','col','cell']
-        output_file_name=output_file_name.replace('.tfrecord','')
-
-        for matname,matrix in zip(mat_names,matrices):
-            im=img.copy()
-            x=1
-            indices = np.argwhere(matrix[x] == 1)
-            for index in indices:
-                cv2.rectangle(im, (int(arr[index, 0])-3, int(arr[index, 1])-3),
-                              (int(arr[index, 2])+3, int(arr[index, 3])+3),
-                              (0,255,0), 1)
-
-            x = 4
-            indices = np.argwhere(matrix[x] == 1)
-            for index in indices:
-                cv2.rectangle(im, (int(arr[index, 0])-3, int(arr[index, 1])-3),
-                              (int(arr[index, 2])+3, int(arr[index, 3])+3),
-                              (0, 0, 255), 1)
-
-            img_name=os.path.join('bboxes/',output_file_name+'_'+str(imgindex)+'_'+matname+'.jpg')
-            cv2.imwrite(img_name,im)
-
-    def generate_tables(self,driver,N_imgs,output_file_name):
+    def generate_tables(self,driver,N_imgs):
         row_col_min=[self.row_min,self.col_min]                 #to randomly select number of rows
         row_col_max=[self.row_max,self.col_max]                 #to randomly select number of columns
         rc_arr = np.random.uniform(low=row_col_min, high=row_col_max, size=(N_imgs, 2))        #random row and col selection for N images
@@ -193,21 +160,11 @@ class GenerateTFRecord:
                 vertex_text = np.zeros((self.num_of_max_vertices,self.max_length_of_word), dtype=np.int64)
                 vertex_text[:no_of_words]=np.array(list(map(self.str_to_int,words_arr)))
 
-                # feature = dict()
-                # feature['image'] = tf.train.Feature(float_list=tf.train.FloatList(value=im.astype(np.float32).flatten()))
-                # feature['global_features'] = tf.train.Feature(float_list=tf.train.FloatList(value=np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten()))
-                # feature['vertex_features'] = tf.train.Feature(float_list=tf.train.FloatList(value=vertex_features.astype(np.float32).flatten()))
-                # feature['adjacency_matrix_cells'] = tf.train.Feature(int64_list=tf.train.Int64List(value=cellmatrix.astype(np.int64).flatten()))
-                # feature['adjacency_matrix_cols'] = tf.train.Feature(int64_list=tf.train.Int64List(value=colmatrix.astype(np.int64).flatten()))
-                # feature['adjacency_matrix_rows'] = tf.train.Feature(int64_list=tf.train.Int64List(value=rowmatrix.astype(np.int64).flatten()))
-                # feature['vertex_text'] = tf.train.Feature(int64_list=tf.train.Int64List(value=vertex_text.astype(np.int64).flatten()))
-                
                 # json
                 featurejs = dict()
                 filename = 'cat'+str(tablecategory)+'_'+str(rc_count)
-                cv2.imwrite('visualizeimgs/images/'+filename+'.jpg',im)
+                cv2.imwrite(os.path.join(self.outtfpath,'images/'+filename+'.jpg'),im)
 
-                # featurejs['image'] = im.astype(np.float32).flatten().tolist()
                 featurejs['img_i'] = filename
                 featurejs['bboxes'] = arr.tolist()
                 
@@ -223,15 +180,14 @@ class GenerateTFRecord:
                 featurejs['vertex_text_shp'] = vertex_text.shape
                 featurejs['vertex_text'] = vertex_text.astype(np.int64).flatten().tolist()
                 
-                a_file = open('visualizeimgs/'+filename+"_matrix.txt", "w")
-                for row in cellmatrix:
-                    np.savetxt(a_file, row)
-                a_file.close()
+                # a_file = open(os.path.join(self.outtfpath,filename+"_matrix.txt", "w")
+                # for row in cellmatrix:
+                #     np.savetxt(a_file, row)
+                # a_file.close()
 
                 jsonString = json.dumps(featurejs)
-                output_file_name=output_file_name.replace('.tfrecord','.json')
 
-                jsonFile = open('visualizeimgs/jsons/'+filename+'.json', "w")
+                jsonFile = open(os.path.join(self.outtfpath,'jsons/'+filename+'.json', "w")
                 jsonFile.write(jsonString)
                 jsonFile.close()
                 ###############
@@ -254,11 +210,9 @@ class GenerateTFRecord:
         # while(True):
             # starttime = time.time()
 
-            #randomly select a name of length=20 for tfrecords file.
-        output_file_name = ''.join(random.choices(string.ascii_uppercase + string.digits, k=20)) + '.tfrecord'
-        print('\nThread: ',threadnum,' Started:', output_file_name)
+        print('\nThread: ',threadnum,' Started.')
         #data_arr contains the images of generated tables and all_table_categories contains the table category of each of the table
-        data_arr,all_table_categories = self.generate_tables(driver, filesize, output_file_name)
+        data_arr,all_table_categories = self.generate_tables(driver, filesize)
         ic(all_table_categories)
         driver.stop_client()
         driver.quit()
@@ -274,9 +228,8 @@ class GenerateTFRecord:
                 return
             
         #create all directories here
-        # if(self.visualizeimgs):
-        self.create_dir('visualizeimgs')
-        dirname='visualizeimgs'
+        self.create_dir(self.outtfpath)
+        dirname=self.outtfpath
         self.create_dir(os.path.join(dirname,'images'))
         self.create_dir(os.path.join(dirname, 'jsons'))
 
@@ -291,4 +244,4 @@ class GenerateTFRecord:
 
         for proc in threads:
             proc.join()
-        print(time.time()-starttime)
+        print("Synth table completed, check at: ", self.outtfpath, ". time length: " time.time()-starttime)
