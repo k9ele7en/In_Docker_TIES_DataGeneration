@@ -187,7 +187,7 @@ class GenerateTFRecord:
 
                 jsonString = json.dumps(featurejs)
 
-                jsonFile = open(os.path.join(self.outtfpath,'jsons/'+filename+'.json', "w")
+                jsonFile = open(os.path.join(self.outtfpath,'jsons/'+filename+'.json'), "w")
                 jsonFile.write(jsonString)
                 jsonFile.close()
                 ###############
