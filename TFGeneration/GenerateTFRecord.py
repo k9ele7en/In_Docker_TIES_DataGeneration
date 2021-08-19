@@ -46,7 +46,7 @@ class GenerateTFRecord:
         #self.logdir = 'logdir/'
         #self.create_dir(self.logdir)
         #logging.basicConfig(filename=os.path.join(self.logdir,'Log.log'), filemode='a+', format='%(name)s - %(levelname)s - %(message)s')
-        self.num_of_max_vertices=900                    #number of vertices (maximum number of words in any table)
+        self.num_of_max_vertices=1000                    #number of vertices (maximum number of words in any table)
         self.max_length_of_word=30                      #max possible length of each word
         self.row_min=3                                  #minimum number of rows in a table (includes headers)
         self.row_max=50                                 #maximum number of rows in a table, df=15
