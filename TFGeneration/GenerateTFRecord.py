@@ -48,9 +48,9 @@ class GenerateTFRecord:
         #logging.basicConfig(filename=os.path.join(self.logdir,'Log.log'), filemode='a+', format='%(name)s - %(levelname)s - %(message)s')
         self.num_of_max_vertices=3000                    #number of vertices (maximum number of words in any table)
         self.max_length_of_word=30                      #max possible length of each word
-        self.row_min=5                                  #minimum number of rows in a table (includes headers)
+        self.row_min=3                                  #minimum number of rows in a table (includes headers), df=3
         self.row_max=15                                 #maximum number of rows in a table, df=15
-        self.col_min=5                                  #minimum number of columns in a table
+        self.col_min=3                                  #minimum number of columns in a table, df=3
         self.col_max=15                                  #maximum number of columns in a table, df=9
         self.minshearval=-0.1                           #minimum value of shear to apply to images
         self.maxshearval=0.1                            #maxmimum value of shear to apply to images
@@ -170,21 +170,21 @@ class GenerateTFRecord:
                 featurejs['bboxes'] = arr.tolist()
                 
                 featurejs['global_features'] = np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten().tolist()
-                featurejs['vertex_features_shp'] = vertex_features.shape
-                featurejs['vertex_features'] = vertex_features.astype(np.float32).flatten().tolist()
-                featurejs['adjacency_matrix_cells_shp'] = cellmatrix.shape
+                # featurejs['vertex_features_shp'] = vertex_features.shape
+                # featurejs['vertex_features'] = vertex_features.astype(np.float32).flatten().tolist()
+                # featurejs['adjacency_matrix_cells_shp'] = cellmatrix.shape
                 featurejs['adjacency_matrix_cells'] = cellmatrix.astype(np.int64).flatten().tolist()
-                featurejs['adjacency_matrix_cols_shp'] = colmatrix.shape
+                # featurejs['adjacency_matrix_cols_shp'] = colmatrix.shape
                 featurejs['adjacency_matrix_cols'] = colmatrix.astype(np.int64).flatten().tolist()
-                featurejs['adjacency_matrix_rows_shp'] = rowmatrix.shape
+                # featurejs['adjacency_matrix_rows_shp'] = rowmatrix.shape
                 featurejs['adjacency_matrix_rows'] = rowmatrix.astype(np.int64).flatten().tolist()
-                featurejs['vertex_text_shp'] = vertex_text.shape
-                featurejs['vertex_text'] = vertex_text.astype(np.int64).flatten().tolist()
+                # featurejs['vertex_text_shp'] = vertex_text.shape
+                # featurejs['vertex_text'] = vertex_text.astype(np.int64).flatten().tolist()
                 
-                # a_file = open(os.path.join(self.outtfpath,filename+"_matrix.txt", "w")
-                # for row in cellmatrix:
-                #     np.savetxt(a_file, row)
-                # a_file.close()
+                a_file = open(os.path.join(self.outtfpath,filename+"_rowmatrix.txt", "w")
+                for row in rowmatrix:
+                    np.savetxt(a_file, row)
+                a_file.close()
 
                 jsonString = json.dumps(featurejs)
 
