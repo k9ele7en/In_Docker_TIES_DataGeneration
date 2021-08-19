@@ -181,7 +181,7 @@ class GenerateTFRecord:
                 # featurejs['vertex_text_shp'] = vertex_text.shape
                 # featurejs['vertex_text'] = vertex_text.astype(np.int64).flatten().tolist()
                 
-                a_file = open(os.path.join(self.outtfpath,filename+"_rowmatrix.txt", "w"))
+                a_file = open(os.path.join(self.outtfpath,filename+"_rowmatrix.txt"), "w")
                 for row in rowmatrix:
                     np.savetxt(a_file, row)
                 a_file.close()
