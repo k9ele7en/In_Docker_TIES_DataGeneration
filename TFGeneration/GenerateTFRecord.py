@@ -49,9 +49,9 @@ class GenerateTFRecord:
         self.num_of_max_vertices=900                    #number of vertices (maximum number of words in any table)
         self.max_length_of_word=30                      #max possible length of each word
         self.row_min=3                                  #minimum number of rows in a table (includes headers)
-        self.row_max=15                                 #maximum number of rows in a table, df=15
+        self.row_max=50                                 #maximum number of rows in a table, df=15
         self.col_min=3                                  #minimum number of columns in a table
-        self.col_max=10                                  #maximum number of columns in a table, df=9
+        self.col_max=50                                  #maximum number of columns in a table, df=9
         self.minshearval=-0.1                           #minimum value of shear to apply to images
         self.maxshearval=0.1                            #maxmimum value of shear to apply to images
         self.minrotval=-0.01                            #minimum rotation applied to images
@@ -133,7 +133,7 @@ class GenerateTFRecord:
                     #transform image and bounding boxes of the words
                     # im, bboxes = Transform(im, bboxes, shearval, rotval, self.max_width, self.max_height)
                     # ic('pass transform')
-                    # tablecategory=4
+                    tablecategory=4
 
                 #######################
                 im=np.asarray(im,np.int64)[:,:,0]
