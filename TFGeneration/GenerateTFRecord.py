@@ -57,8 +57,8 @@ class GenerateTFRecord:
         self.minrotval=-0.01                            #minimum rotation applied to images
         self.maxrotval=0.01                             #maximum rotation applied to images
         self.num_data_dims=5                            #data dimensions to store in tfrecord
-        self.max_height=768*1.5                             #max image height
-        self.max_width=1366*1.5                             #max image width
+        self.max_height=768                             #max image height
+        self.max_width=1366                             #max image width
         self.tables_cat_dist = self.get_category_distribution(self.filesize)
 
     def get_category_distribution(self,filesize):
@@ -120,20 +120,20 @@ class GenerateTFRecord:
                 im,bboxes = html_to_img(driver, html_content, id_count)
                 print('loop, current: ', assigned_category, _, cat_count)
                 
-                # if(assigned_category+1==4):
-                #     #randomly select shear and rotation levels
-                #     while(True):
-                #         shearval = np.random.uniform(self.minshearval, self.maxshearval)
-                #         rotval = np.random.uniform(self.minrotval, self.maxrotval)
-                #         if(shearval!=0.0 or rotval!=0.0):
-                #             break
+                if(assigned_category+1==4):
+                    #randomly select shear and rotation levels
+                    while(True):
+                        shearval = np.random.uniform(self.minshearval, self.maxshearval)
+                        rotval = np.random.uniform(self.minrotval, self.maxrotval)
+                        if(shearval!=0.0 or rotval!=0.0):
+                            break
 
-                #     #If the image is transformed, then its categorycategory is 4
+                    #If the image is transformed, then its categorycategory is 4
 
-                #     #transform image and bounding boxes of the words
-                #     # im, bboxes = Transform(im, bboxes, shearval, rotval, self.max_width, self.max_height)
-                #     # ic('pass transform')
-                #     tablecategory=4
+                    #transform image and bounding boxes of the words
+                    # im, bboxes = Transform(im, bboxes, shearval, rotval, self.max_width, self.max_height)
+                    # ic('pass transform')
+                    tablecategory=4
 
                 #######################
                 im=np.asarray(im,np.int64)[:,:,0]
