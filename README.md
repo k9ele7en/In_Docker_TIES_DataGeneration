@@ -23,7 +23,7 @@ sudo docker run -it --rm -v ~/repo/TIES_DataGeneration:/tf/repo tbgen:v1 /bin/ba
 5. Start generate table data:
 ```
 cd tf/repo
-python generate_data.py --filesize 1 --threads 2 --imagespath UNLV_dataset/unlv_images --ocrpath UNLV_dataset/unlv_xml_ocr --tablepath UNLV_dataset/unlv_xml_ocr --visualizeimgs 1 --visualizebboxes 1
+python generate_data.py --filesize 50 --threads 4 --imagespath UNLV_dataset/unlv_images --ocrpath UNLV_dataset/unlv_xml_ocr --tablepath UNLV_dataset/unlv_xml_ocr
 ```
 or
 ```
