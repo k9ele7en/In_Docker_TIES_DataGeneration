@@ -46,12 +46,12 @@ class GenerateTFRecord:
         #self.logdir = 'logdir/'
         #self.create_dir(self.logdir)
         #logging.basicConfig(filename=os.path.join(self.logdir,'Log.log'), filemode='a+', format='%(name)s - %(levelname)s - %(message)s')
-        self.num_of_max_vertices=5000                    #number of vertices (maximum number of words in any table)
+        self.num_of_max_vertices=3000                    #number of vertices (maximum number of words in any table)
         self.max_length_of_word=30                      #max possible length of each word
-        self.row_min=3                                  #minimum number of rows in a table (includes headers)
+        self.row_min=5                                  #minimum number of rows in a table (includes headers)
         self.row_max=15                                 #maximum number of rows in a table, df=15
-        self.col_min=3                                  #minimum number of columns in a table
-        self.col_max=9                                  #maximum number of columns in a table, df=9
+        self.col_min=5                                  #minimum number of columns in a table
+        self.col_max=15                                  #maximum number of columns in a table, df=9
         self.minshearval=-0.1                           #minimum value of shear to apply to images
         self.maxshearval=0.1                            #maxmimum value of shear to apply to images
         self.minrotval=-0.01                            #minimum rotation applied to images
@@ -90,7 +90,7 @@ class GenerateTFRecord:
         dummy[:arr.shape[0],:arr.shape[1]]=arr
         return dummy
 
-    def generate_tables(self,driver,N_imgs):
+    def generate_tables(self,driver,N_imgs,threadnum):
         row_col_min=[self.row_min,self.col_min]                 #to randomly select number of rows
         row_col_max=[self.row_max,self.col_max]                 #to randomly select number of columns
         rc_arr = np.random.uniform(low=row_col_min, high=row_col_max, size=(N_imgs, 2))        #random row and col selection for N images
@@ -163,7 +163,7 @@ class GenerateTFRecord:
 
                 # json
                 featurejs = dict()
-                filename = 'cat'+str(tablecategory)+'_'+str(_)
+                filename = 't'+str(threadnum)+'_c'+str(tablecategory)+'_'+str(_)
                 cv2.imwrite(os.path.join(self.outtfpath,'images/'+filename+'.jpg'),im)
 
                 featurejs['img_i'] = filename
@@ -212,7 +212,7 @@ class GenerateTFRecord:
 
         print('\nThread: ',threadnum,' Started.')
         #data_arr contains the images of generated tables and all_table_categories contains the table category of each of the table
-        data_arr,all_table_categories = self.generate_tables(driver, filesize)
+        data_arr,all_table_categories = self.generate_tables(driver, filesize, threadnum)
         ic(all_table_categories)
         driver.stop_client()
         driver.quit()
