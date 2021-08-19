@@ -1,7 +1,6 @@
 import warnings
 warnings.filterwarnings("ignore")
 
-import tensorflow as tf
 import numpy as np
 import traceback
 import cv2
@@ -50,9 +49,9 @@ class GenerateTFRecord:
         self.num_of_max_vertices=900                    #number of vertices (maximum number of words in any table)
         self.max_length_of_word=30                      #max possible length of each word
         self.row_min=3                                  #minimum number of rows in a table (includes headers)
-        self.row_max=15                                 #maximum number of rows in a table
+        self.row_max=1000                                 #maximum number of rows in a table, df=15
         self.col_min=3                                  #minimum number of columns in a table
-        self.col_max=9                                  #maximum number of columns in a table
+        self.col_max=1000                                  #maximum number of columns in a table, df=9
         self.minshearval=-0.1                           #minimum value of shear to apply to images
         self.maxshearval=0.1                            #maxmimum value of shear to apply to images
         self.minrotval=-0.01                            #minimum rotation applied to images
@@ -101,9 +100,11 @@ class GenerateTFRecord:
         exceptioncount=0
 
         rc_count=0                                              #for iterating through row and col array
-
+        print('total: ', self.tables_cat_dist)
         for assigned_category,cat_count in enumerate(self.tables_cat_dist):
+            print('cat: ', assigned_category)
             for _ in range(cat_count):
+                print('count: ',_)
                 rows = int(round(rc_arr[rc_count][0]))
                 cols = int(round(rc_arr[rc_count][1]))
                 exceptcount=0
@@ -117,7 +118,7 @@ class GenerateTFRecord:
                 #convert this html code to image using selenium webdriver. Get equivalent bounding boxes
                 #for each word in the table. This will generate ground truth for our problem
                 im,bboxes = html_to_img(driver, html_content, id_count)
-                ic('loop, current: ', assigned_category, _, cat_count)
+                print('loop, current: ', assigned_category, _, cat_count)
                 
                 if(assigned_category+1==4):
                     #randomly select shear and rotation levels
@@ -132,7 +133,7 @@ class GenerateTFRecord:
                     #transform image and bounding boxes of the words
                     # im, bboxes = Transform(im, bboxes, shearval, rotval, self.max_width, self.max_height)
                     # ic('pass transform')
-                    tablecategory=4
+                    # tablecategory=4
 
                 #######################
                 im=np.asarray(im,np.int64)[:,:,0]
@@ -162,7 +163,7 @@ class GenerateTFRecord:
 
                 # json
                 featurejs = dict()
-                filename = 'cat'+str(tablecategory)+'_'+str(rc_count)
+                filename = 'cat'+str(tablecategory)+'_'+str(_)
                 cv2.imwrite(os.path.join(self.outtfpath,'images/'+filename+'.jpg'),im)
 
                 featurejs['img_i'] = filename
@@ -201,7 +202,6 @@ class GenerateTFRecord:
 
     def write_tf(self,filesize,threadnum):
         '''This function writes tfrecords. Input parameters are: filesize (number of images in one tfrecord), threadnum(thread id)'''
-        options = tf.compat.v1.io.TFRecordOptions(tf.compat.v1.io.TFRecordCompressionType.GZIP)
         opts = Options()
         opts.set_headless()
         assert opts.headless
