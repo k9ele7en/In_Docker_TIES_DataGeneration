@@ -4,7 +4,6 @@ def parse_json(js_path):
     annotation = dict()
     with open(js_path) as json_file:
         data=json.load(json_file)
-        print(data)
         img_name = data['filename']
         size = data['size']
         h=size[0]
@@ -14,7 +13,7 @@ def parse_json(js_path):
             'filename': img_name,
             'width': w,
             'height': h,
-            'bboxes': bboxes.astype(np.float32)
+            'bboxes': bboxes
         }
     return annotation
 
