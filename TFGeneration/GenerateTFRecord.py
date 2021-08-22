@@ -105,95 +105,105 @@ class GenerateTFRecord:
             print('cat: ', assigned_category)
             for _ in range(cat_count):
                 print('count: ',_)
-                rows = int(round(rc_arr[rc_count][0]))
-                cols = int(round(rc_arr[rc_count][1]))
-                exceptcount=0
+                while(True):
+                    try:
+                        rows = int(round(rc_arr[rc_count][0]))
+                        cols = int(round(rc_arr[rc_count][1]))
+                        exceptcount=0
 
-                ###out of while####
-                table = Table(rows,cols,self.unlvimagespath,self.unlvocrpath,self.unlvtablepath,assigned_category+1,self.distributionfile)
-                #get table of rows and cols based on unlv distribution and get features of this table
-                #(same row, col and cell matrices, total unique ids, html conversion of table and its category)
-                same_cell_matrix,same_col_matrix,same_row_matrix, id_count, html_content,tablecategory= table.create()
+                        ###out of while####
+                        table = Table(rows,cols,self.unlvimagespath,self.unlvocrpath,self.unlvtablepath,assigned_category+1,self.distributionfile)
+                        #get table of rows and cols based on unlv distribution and get features of this table
+                        #(same row, col and cell matrices, total unique ids, html conversion of table and its category)
+                        same_cell_matrix,same_col_matrix,same_row_matrix, id_count, html_content,tablecategory= table.create()
 
-                #convert this html code to image using selenium webdriver. Get equivalent bounding boxes
-                #for each word in the table. This will generate ground truth for our problem
-                im,bboxes = html_to_img(driver, html_content, id_count)
-                print('loop, current: ', assigned_category, _, cat_count)
-                
-                if(assigned_category+1==4):
-                    #randomly select shear and rotation levels
-                    while(True):
-                        shearval = np.random.uniform(self.minshearval, self.maxshearval)
-                        rotval = np.random.uniform(self.minrotval, self.maxrotval)
-                        if(shearval!=0.0 or rotval!=0.0):
-                            break
+                        #convert this html code to image using selenium webdriver. Get equivalent bounding boxes
+                        #for each word in the table. This will generate ground truth for our problem
+                        im,bboxes = html_to_img(driver, html_content, id_count)
+                        print('loop, current: ', assigned_category, _, cat_count)
+                        
+                        if(assigned_category+1==4):
+                            #randomly select shear and rotation levels
+                            while(True):
+                                shearval = np.random.uniform(self.minshearval, self.maxshearval)
+                                rotval = np.random.uniform(self.minrotval, self.maxrotval)
+                                if(shearval!=0.0 or rotval!=0.0):
+                                    break
 
-                    #If the image is transformed, then its categorycategory is 4
+                            #If the image is transformed, then its categorycategory is 4
 
-                    #transform image and bounding boxes of the words
-                    # im, bboxes = Transform(im, bboxes, shearval, rotval, self.max_width, self.max_height)
-                    # ic('pass transform')
-                    tablecategory=4
+                            #transform image and bounding boxes of the words
+                            # im, bboxes = Transform(im, bboxes, shearval, rotval, self.max_width, self.max_height)
+                            # ic('pass transform')
+                            tablecategory=4
 
-                #######################
-                im=np.asarray(im,np.int64)[:,:,0]
-            
-                colmatrix = np.array(same_col_matrix,dtype=np.int64)
-                cellmatrix = np.array(same_cell_matrix,dtype=np.int64)
-                rowmatrix = np.array(same_row_matrix,dtype=np.int64)
-                arr = np.array(bboxes)
+                        #######################
+                        im=np.asarray(im,np.int64)[:,:,0]
+                    
+                        colmatrix = np.array(same_col_matrix,dtype=np.int64)
+                        cellmatrix = np.array(same_cell_matrix,dtype=np.int64)
+                        rowmatrix = np.array(same_row_matrix,dtype=np.int64)
+                        arr = np.array(bboxes)
 
-                # save json and img
-                cellmatrix=self.pad_with_zeros(same_cell_matrix,(self.num_of_max_vertices,self.num_of_max_vertices))
-                colmatrix = self.pad_with_zeros(same_col_matrix, (self.num_of_max_vertices, self.num_of_max_vertices))
-                rowmatrix = self.pad_with_zeros(same_row_matrix, (self.num_of_max_vertices, self.num_of_max_vertices))
+                        # save json and img
+                        cellmatrix=self.pad_with_zeros(same_cell_matrix,(self.num_of_max_vertices,self.num_of_max_vertices))
+                        colmatrix = self.pad_with_zeros(same_col_matrix, (self.num_of_max_vertices, self.num_of_max_vertices))
+                        rowmatrix = self.pad_with_zeros(same_row_matrix, (self.num_of_max_vertices, self.num_of_max_vertices))
 
-                img_height, img_width=im.shape
-                words_arr = arr[:, 1].tolist()
-                no_of_words = len(words_arr)
+                        img_height, img_width=im.shape
+                        words_arr = arr[:, 1].tolist()
+                        no_of_words = len(words_arr)
 
-                lengths_arr = self.convert_to_int(arr[:, 0])
-                vertex_features=np.zeros(shape=(self.num_of_max_vertices,self.num_data_dims),dtype=np.int64)
-                lengths_arr=np.array(lengths_arr).reshape(len(lengths_arr),-1)
-                sample_out=np.array(np.concatenate((arr[:,2:],lengths_arr),axis=1))
-                vertex_features[:no_of_words,:]=sample_out
+                        lengths_arr = self.convert_to_int(arr[:, 0])
+                        vertex_features=np.zeros(shape=(self.num_of_max_vertices,self.num_data_dims),dtype=np.int64)
+                        lengths_arr=np.array(lengths_arr).reshape(len(lengths_arr),-1)
+                        sample_out=np.array(np.concatenate((arr[:,2:],lengths_arr),axis=1))
+                        vertex_features[:no_of_words,:]=sample_out
 
-                vertex_text = np.zeros((self.num_of_max_vertices,self.max_length_of_word), dtype=np.int64)
-                vertex_text[:no_of_words]=np.array(list(map(self.str_to_int,words_arr)))
+                        vertex_text = np.zeros((self.num_of_max_vertices,self.max_length_of_word), dtype=np.int64)
+                        vertex_text[:no_of_words]=np.array(list(map(self.str_to_int,words_arr)))
 
-                # json
-                featurejs = dict()
-                filename = 't'+str(threadnum)+'_c'+str(tablecategory)+'_'+str(_)
-                cv2.imwrite(os.path.join(self.outtfpath,'images/'+filename+'.jpg'),im)
+                        # json
+                        featurejs = dict()
+                        filename = 't'+str(threadnum)+'_c'+str(tablecategory)+'_'+str(_)
+                        cv2.imwrite(os.path.join(self.outtfpath,'images/'+filename+'.jpg'),im)
 
-                featurejs['filename'] = filename
-                featurejs['size'] = np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten().tolist()
+                        featurejs['filename'] = filename
+                        featurejs['size'] = np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten().tolist()
 
-                featurejs['bboxes'] = arr.tolist()
-                
-                # featurejs['global_features'] = np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten().tolist()
-                # featurejs['vertex_features_shp'] = vertex_features.shape
-                # featurejs['vertex_features'] = vertex_features.astype(np.float32).flatten().tolist()
-                # featurejs['adjacency_matrix_cells_shp'] = cellmatrix.shape
-                # featurejs['adjacency_matrix_cells'] = cellmatrix.astype(np.int64).flatten().tolist()
-                # featurejs['adjacency_matrix_cols_shp'] = colmatrix.shape
-                # featurejs['adjacency_matrix_cols'] = colmatrix.astype(np.int64).flatten().tolist()
-                # featurejs['adjacency_matrix_rows_shp'] = rowmatrix.shape
-                # featurejs['adjacency_matrix_rows'] = rowmatrix.astype(np.int64).flatten().tolist()
-                # featurejs['vertex_text_shp'] = vertex_text.shape
-                # featurejs['vertex_text'] = vertex_text.astype(np.int64).flatten().tolist()
+                        featurejs['bboxes'] = arr.tolist()
+                        
+                        # featurejs['global_features'] = np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten().tolist()
+                        # featurejs['vertex_features_shp'] = vertex_features.shape
+                        # featurejs['vertex_features'] = vertex_features.astype(np.float32).flatten().tolist()
+                        # featurejs['adjacency_matrix_cells_shp'] = cellmatrix.shape
+                        # featurejs['adjacency_matrix_cells'] = cellmatrix.astype(np.int64).flatten().tolist()
+                        # featurejs['adjacency_matrix_cols_shp'] = colmatrix.shape
+                        # featurejs['adjacency_matrix_cols'] = colmatrix.astype(np.int64).flatten().tolist()
+                        # featurejs['adjacency_matrix_rows_shp'] = rowmatrix.shape
+                        # featurejs['adjacency_matrix_rows'] = rowmatrix.astype(np.int64).flatten().tolist()
+                        # featurejs['vertex_text_shp'] = vertex_text.shape
+                        # featurejs['vertex_text'] = vertex_text.astype(np.int64).flatten().tolist()
 
-                jsonString = json.dumps(featurejs)
+                        jsonString = json.dumps(featurejs)
 
-                jsonFile = open(os.path.join(self.outtfpath,'jsons/'+filename+'.json'), "w")
-                jsonFile.write(jsonString)
-                jsonFile.close()
-                ###############
-                print('Assigned category: ',assigned_category+1,', generated category: ',tablecategory)
-                ##############
-                
-                rc_count+=1
-                all_table_categories[tablecategory-1]+=1
+                        jsonFile = open(os.path.join(self.outtfpath,'jsons/'+filename+'.json'), "w")
+                        jsonFile.write(jsonString)
+                        jsonFile.close()
+                        ###############
+                        print('Assigned category: ',assigned_category+1,', generated category: ',tablecategory)
+                        ##############
+                        
+                        rc_count+=1
+                        all_table_categories[tablecategory-1]+=1
+                        break
+                    except Exception as e:
+                        #traceback.print_exc()
+                        exceptcount+=1
+                        if(exceptioncount>10):
+                            print('More than 10 exceptions occured for file: ',output_file_name)
+                            #if there are more than 10 exceptions, then return None
+                            return None
         
         return data_arr,all_table_categories
 
