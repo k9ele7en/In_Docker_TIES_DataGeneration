@@ -101,7 +101,7 @@ class GenerateTFRecord:
 
         rc_count=0                                              #for iterating through row and col array
         print('total: ', self.tables_cat_dist)
-        for assigned_category,cat_count in enumerate(self.tables_cat_dist):
+        for assigned_category,cat_count in enumerate(self.tables_cat_dist): 
             print('cat: ', assigned_category)
             for _ in range(cat_count):
                 print('count: ',_)
@@ -166,25 +166,22 @@ class GenerateTFRecord:
                 filename = 't'+str(threadnum)+'_c'+str(tablecategory)+'_'+str(_)
                 cv2.imwrite(os.path.join(self.outtfpath,'images/'+filename+'.jpg'),im)
 
-                featurejs['img_i'] = filename
+                featurejs['filename'] = filename
+                featurejs['size'] = np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten().tolist()
+
                 featurejs['bboxes'] = arr.tolist()
                 
-                featurejs['global_features'] = np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten().tolist()
+                # featurejs['global_features'] = np.array([img_height, img_width,no_of_words,tablecategory]).astype(np.float32).flatten().tolist()
                 # featurejs['vertex_features_shp'] = vertex_features.shape
                 # featurejs['vertex_features'] = vertex_features.astype(np.float32).flatten().tolist()
                 # featurejs['adjacency_matrix_cells_shp'] = cellmatrix.shape
-                featurejs['adjacency_matrix_cells'] = cellmatrix.astype(np.int64).flatten().tolist()
+                # featurejs['adjacency_matrix_cells'] = cellmatrix.astype(np.int64).flatten().tolist()
                 # featurejs['adjacency_matrix_cols_shp'] = colmatrix.shape
-                featurejs['adjacency_matrix_cols'] = colmatrix.astype(np.int64).flatten().tolist()
+                # featurejs['adjacency_matrix_cols'] = colmatrix.astype(np.int64).flatten().tolist()
                 # featurejs['adjacency_matrix_rows_shp'] = rowmatrix.shape
-                featurejs['adjacency_matrix_rows'] = rowmatrix.astype(np.int64).flatten().tolist()
+                # featurejs['adjacency_matrix_rows'] = rowmatrix.astype(np.int64).flatten().tolist()
                 # featurejs['vertex_text_shp'] = vertex_text.shape
                 # featurejs['vertex_text'] = vertex_text.astype(np.int64).flatten().tolist()
-                
-                # a_file = open(os.path.join(self.outtfpath,filename+"_rowmatrix.txt"), "w")
-                # for row in rowmatrix:
-                #     np.savetxt(a_file, row)
-                # a_file.close()
 
                 jsonString = json.dumps(featurejs)
 
