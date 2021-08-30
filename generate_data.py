@@ -19,7 +19,7 @@ if __name__ == '__main__':
 
     distributionfile='unlv_distribution'
 
-    t = GenerateTFRecord(args.outpath,filesize,args.imagespath,
+    t = GenerateTFRecord(args.outpath,filesize//args.threads,args.imagespath,
                         args.ocrpath,args.tablepath,distributionfile)
     t.write_to_tf(args.threads)
 
