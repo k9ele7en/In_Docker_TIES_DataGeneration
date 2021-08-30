@@ -101,16 +101,15 @@ class GenerateTFRecord:
 
         rc_count=0                                              #for iterating through row and col array
         print('total: ', self.tables_cat_dist)
-        for assigned_category,cat_count in enumerate(self.tables_cat_dist): 
-            print('cat: ', assigned_category)
+        for assigned_category,cat_count in enumerate(self.tables_cat_dist):
+
             for _ in range(cat_count):
-                print('count: ',_)
+                rows = int(round(rc_arr[rc_count][0]))
+                cols = int(round(rc_arr[rc_count][1]))
+                exceptcount=0
+
                 while(True):
                     try:
-                        rows = int(round(rc_arr[rc_count][0]))
-                        cols = int(round(rc_arr[rc_count][1]))
-                        exceptcount=0
-
                         ###out of while####
                         table = Table(rows,cols,self.unlvimagespath,self.unlvocrpath,self.unlvtablepath,assigned_category+1,self.distributionfile)
                         #get table of rows and cols based on unlv distribution and get features of this table
@@ -194,7 +193,6 @@ class GenerateTFRecord:
                         print('Assigned category: ',assigned_category+1,', generated category: ',tablecategory)
                         ##############
                         
-                        rc_count+=1
                         all_table_categories[tablecategory-1]+=1
                         break
                     except Exception as e:
@@ -204,7 +202,8 @@ class GenerateTFRecord:
                             print('More than 10 exceptions occured for file: ',output_file_name)
                             #if there are more than 10 exceptions, then return None
                             return None
-        
+                rc_count+=1
+
         return data_arr,all_table_categories
 
     def write_tf(self,filesize,threadnum):
